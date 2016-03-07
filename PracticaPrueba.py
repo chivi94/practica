@@ -35,6 +35,8 @@ def llenar_tablero(tablero, nivel=1):
                  
 def modificar_posicion(fila,columna,tablero):
     #Cuadrado generado central(3x5)
+    fila = fila+1
+    columna = columna+1
     for fila_actual in range(fila-1,fila+2):
         for columna_actual in range(columna-2,columna+3):
             comprobar_posicion(tablero, fila_actual, columna_actual)
@@ -60,7 +62,7 @@ def comprobar_peticion(peticion):
         #Con ord obtenemos el valor ASCII de los caracteres pasados como argumentos.Sumamos 2 para compensar el marco usado  
         numero_fila= (ord(letra_fila)-ord("a"))+2
         numero_columna = int(peticion[1])+2
-        modificar_posicion(numero_fila, numero_columna, tablero)
+        modificar_posicion(numero_fila-1, numero_columna-2, tablero)
         return True
     elif peticion == "salir":
         return False
@@ -80,4 +82,4 @@ while(continuar):
     imprimir_tablero(tablero)   
     peticion = raw_input("Seleccione coordenadas:")
     peticion_correcta = peticion.replace(" ", "").lower()
-    continuar=comprobar_peticion(peticion_correcta)      
+    continuar=comprobar_peticion(peticion_correcta)         

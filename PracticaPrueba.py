@@ -43,5 +43,5 @@ def posicion_generada(fila,columna,tablero):
 iniciar_tablero(tablero)
 imprimir_tablero(tablero)
 llenar_tablero(tablero)
-print "Pollas gordas"
+print "Linea inutil"
 imprimir_tablero(tablero)            

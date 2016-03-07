@@ -18,7 +18,7 @@ def imprimir_tablero(tablero):
             print tablero[i][j],
         print""
  
-'''Este metodo llenara el tablero de juego recibido como parametro y en funcion del nivel seleccionado por el usuario. 
+'''ste metodo llenara el tablero de juego recibido como parametro y en funcion del nivel seleccionado por el usuario. 
 El nivel por defecto es 1.'''         
 def llenar_tablero(tablero, nivel=1):
     fila_generada = 0
@@ -31,7 +31,7 @@ def llenar_tablero(tablero, nivel=1):
         columna_generada = random.randint(1,ultima_columna)
         print fila_generada,columna_generada
         posicion_generada(fila_generada, columna_generada, tablero)
-        
+        posicion_generada(0, 0, tablero)
     
          
 def posicion_generada(fila,columna,tablero):
@@ -43,5 +43,5 @@ def posicion_generada(fila,columna,tablero):
 iniciar_tablero(tablero)
 imprimir_tablero(tablero)
 llenar_tablero(tablero)
-print "Linea inutil"
+print "Pollas gordas"
 imprimir_tablero(tablero)            

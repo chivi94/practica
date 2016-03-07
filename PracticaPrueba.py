@@ -18,7 +18,7 @@ def imprimir_tablero(tablero):
             print tablero[i][j],
         print""
  
-'''ste metodo llenara el tablero de juego recibido como parametro y en funcion del nivel seleccionado por el usuario. 
+'''Este metodo llenara el tablero de juego recibido como parametro y en funcion del nivel seleccionado por el usuario. 
 El nivel por defecto es 1.'''         
 def llenar_tablero(tablero, nivel=1):
     fila_generada = 0

@@ -31,11 +31,9 @@ def llenar_tablero(tablero, nivel=1):
         fila_generada = random.randint(1,ultima_fila)
         columna_generada = random.randint(1,ultima_columna)
         print fila_generada,columna_generada                      
-        posicion_generada(fila_generada, columna_generada, tablero)                  
-        
-    
-         
-def posicion_generada(fila,columna,tablero):
+        modificar_posicion(5, 5, tablero)                  
+                 
+def modificar_posicion(fila,columna,tablero):
     #Cuadrado generado central(3x5)
     for fila_actual in range(fila-1,fila+2):
         for columna_actual in range(columna-2,columna+3):
@@ -54,7 +52,32 @@ def comprobar_posicion(tablero,fila,columna):
         tablero[fila][columna] = "."
     else:
         tablero[fila][columna] = "x"
-                   
+
+#Metodo que comprueba la peticion realizada por el usuario, y en caso que esta sea salir, termina la ejecucion.
+def comprobar_peticion(peticion):
+    if len(peticion)==2:
+        letra_fila = peticion[0]
+        #Con ord obtenemos el valor ASCII de los caracteres pasados como argumentos.Sumamos 2 para compensar el marco usado  
+        numero_fila= (ord(letra_fila)-ord("a"))+2
+        numero_columna = int(peticion[1])+2
+        modificar_posicion(numero_fila, numero_columna, tablero)
+        return True
+    elif peticion == "salir":
+        return False
+    elif peticion == "deshacer":
+        #Codigo que revertira un movimiento realizado por el jugador
+        print "Se incluira en versiones posteriores"
+        return True
+    else:
+        print "Peticion no valida"
+        return True
+                        
 iniciar_tablero(tablero)
-llenar_tablero(tablero, 5)
-imprimir_tablero(tablero)            
+llenar_tablero(tablero, 1)       
+#Juego
+continuar = True
+while(continuar):
+    imprimir_tablero(tablero)   
+    peticion = raw_input("Seleccione coordenadas:")
+    peticion_correcta = peticion.replace(" ", "").lower()
+    continuar=comprobar_peticion(peticion_correcta)      

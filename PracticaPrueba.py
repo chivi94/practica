@@ -49,11 +49,15 @@ def modificar_posicion(fila,columna,tablero):
         for col_inf in range (columna-1,columna+2):
             comprobar_posicion(tablero, fil_inf, col_inf)
             
-def comprobar_posicion(tablero,fila,columna):      
-    if tablero[fila][columna] == "x":       
-        tablero[fila][columna] = "."
-    else:
-        tablero[fila][columna] = "x"
+def comprobar_posicion(tablero,fila,columna):   
+    try:   
+        if tablero[fila][columna] == "x":       
+            tablero[fila][columna] = "."
+        else:
+            tablero[fila][columna] = "x"
+    except IndexError:
+        print "Indice no valido"
+        
 
 #Metodo que comprueba la peticion realizada por el usuario, y en caso que esta sea salir, termina la ejecucion.
 def comprobar_peticion(peticion):

@@ -1,3 +1,9 @@
+'''
+Created on 7 de mar. de 2016
+
+@authors: Antonio Roman Lopez
+          Ivan Gonzalez Rincon
+'''
 import random
 #Tenemos un marco de 2x2 para controlar la generacion de posiciones en los extremos del tablero.
 #Por ello, necesitamos 2 filas y 2 columnas mas a cada lado.
@@ -5,6 +11,11 @@ FILAS = 14
 COLUMNAS = 14
 
 tablero = []
+historial_jugadas=[]
+puntuacion = 0
+#Este contador llevara la cuenta de la ronda en la que el usuario se encuentra para 
+#poder deshacer jugada.
+ronda_actual = 0
 
 def iniciar_tablero(tablero):
     for i in range(FILAS):
@@ -49,15 +60,21 @@ def modificar_posicion(fila,columna,tablero):
         for col_inf in range (columna-1,columna+2):
             comprobar_posicion(tablero, fil_inf, col_inf)
             
-def comprobar_posicion(tablero,fila,columna):   
-    try:   
+def comprobar_posicion(tablero,fila,columna): 
         if tablero[fila][columna] == "x":       
             tablero[fila][columna] = "."
         else:
             tablero[fila][columna] = "x"
-    except IndexError:
-        print "Indice no valido"
-        
+
+'''Metodo que deshara la jugada actual del jugador.
+Debera volver a un estado anterior siempre que el actual no sea el primer turno de juego.
+'''
+def deshacer_jugada(tablero, ronda):
+    if ronda >= 0:
+        tablero = historial_jugadas[ronda-1]
+        ronda -=1
+    else:
+        print "No se puede deshacer la jugada actual"   
 
 #Metodo que comprueba la peticion realizada por el usuario, y en caso que esta sea salir, termina la ejecucion.
 def comprobar_peticion(peticion):
@@ -72,7 +89,7 @@ def comprobar_peticion(peticion):
         return False
     elif peticion == "deshacer":
         #Codigo que revertira un movimiento realizado por el jugador
-        print "Se incluira en versiones posteriores"
+        deshacer_jugada(tablero, ronda_actual)
         return True
     else:
         print "Peticion no valida"
@@ -86,4 +103,9 @@ while(continuar):
     imprimir_tablero(tablero)   
     peticion = raw_input("Seleccione coordenadas:")
     peticion_correcta = peticion.replace(" ", "").lower()
-    continuar=comprobar_peticion(peticion_correcta)         
+    try:
+        continuar=comprobar_peticion(peticion_correcta)
+        historial_jugadas.append(tablero)
+        print historial_jugadas
+    except IndexError:
+        print "Indice no valido"

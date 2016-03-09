@@ -84,6 +84,7 @@ def comprobar_peticion(peticion):
         numero_fila= (ord(letra_fila)-ord("a"))+2
         numero_columna = int(peticion[1])+2
         modificar_posicion(numero_fila-1, numero_columna-2, tablero)
+        historial_jugadas.append(tablero)
         return True
     elif peticion == "salir":
         return False
@@ -106,7 +107,6 @@ while(continuar):
     peticion_correcta = peticion.replace(" ", "").lower()
     try:
         continuar=comprobar_peticion(peticion_correcta)
-        historial_jugadas.append(tablero)
         print historial_jugadas
     except IndexError:
         print "Indice no valido"

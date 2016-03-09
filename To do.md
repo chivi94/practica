@@ -1,6 +1,6 @@
 #General
-A)Fichero de puntuacioes
-B)Finalización de bucle de ejecución inicial del programa
+A)Fichero de puntuacioes  
+B)Finalización de bucle de ejecución inicial del programa  
 C)Deshacer jugadas
 
 

@@ -1,10 +1,11 @@
+#-*- encoding: utf-8 -*-
 '''
 Created on 7 de mar. de 2016
 @authors: Antonio Roman Lopez
           Ivan Gonzalez Rincon
 '''
 import random
-#Tenemos un marco de 2x2 para controlar la generacion de posiciones en los extremos del tablero.
+#Tenemos un marco de 2x2 para controlar la generación de posiciones en los extremos del tablero.
 #Por ello, necesitamos 2 filas y 2 columnas mas a cada lado.
 FILAS = 14
 COLUMNAS = 14
@@ -76,26 +77,20 @@ def deshacer_jugada(tablero, ronda):
     else:
         print "No se puede deshacer la jugada actual"   
 
-#Metodo que comprueba la peticion realizada por el usuario, y en caso que esta sea salir, termina la ejecucion.
-def comprobar_peticion(peticion):
-    if len(peticion)==2:
-        letra_fila = peticion[0]
-        #Con ord obtenemos el valor ASCII de los caracteres pasados como argumentos.Sumamos 2 para compensar el marco usado  
-        numero_fila= (ord(letra_fila)-ord("a"))+2
-        numero_columna = int(peticion[1])+2
-        modificar_posicion(numero_fila-1, numero_columna-2, tablero)
-        historial_jugadas.append(tablero)
-        return True
-    elif peticion == "salir":
+#Metodo que comprobara si se ha completado el tablero
+def tablero_completado(tablero):
+    contador = 0
+    for i in range(2,FILAS-2):
+        for j in range(1,COLUMNAS-3):
+            if tablero[i][j] == 'x':
+                contador+=1
+    #Si todo el tablero esta desactivado, el programa termina
+    if contador == 0:
         return False
-    elif peticion == "deshacer":
-        #Codigo que revertira un movimiento realizado por el jugador
-        deshacer_jugada(tablero, ronda_actual)
-        return True
+    #En caso contrario, continua
     else:
-        print "Peticion no valida"
         return True
-                        
+      
 iniciar_tablero(tablero)
 llenar_tablero(tablero, int(raw_input("Introduzca nivel: ")))
       
@@ -105,8 +100,23 @@ while(continuar):
     imprimir_tablero(tablero)   
     peticion = raw_input("Seleccione coordenadas:")
     peticion_correcta = peticion.replace(" ", "").lower()
+    #Comprobacion de la peticion realizada por el usuario
     try:
-        continuar=comprobar_peticion(peticion_correcta)
+        if len(peticion)==2:
+            letra_fila = peticion[0]
+            #Con ord obtenemos el valor ASCII de los caracteres pasados como argumentos.Sumamos 2 para compensar el marco usado  
+            numero_fila= (ord(letra_fila)-ord("a"))+2
+            numero_columna = int(peticion[1])+2
+            modificar_posicion(numero_fila-1, numero_columna-2, tablero)
+            historial_jugadas.append(tablero)
+        elif peticion == "salir":
+            break
+        elif peticion == "deshacer":
+        #Codigo que revertira un movimiento realizado por el jugador
+            deshacer_jugada(tablero, ronda_actual)
+        else:
+            print "Peticion no valida"
         print historial_jugadas
+        continuar = tablero_completado(tablero)
     except IndexError:
         print "Indice no valido"

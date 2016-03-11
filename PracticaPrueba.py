@@ -1,10 +1,11 @@
+#-*- encoding: utf-8 -*-
 '''
 Created on 7 de mar. de 2016
 @authors: Antonio Roman Lopez
           Ivan Gonzalez Rincon
 '''
 import random
-#Tenemos un marco de 2x2 para controlar la generacion de posiciones en los extremos del tablero.
+#Tenemos un marco de 2x2 para controlar la generación de posiciones en los extremos del tablero.
 #Por ello, necesitamos 2 filas y 2 columnas mas a cada lado.
 FILAS = 14
 COLUMNAS = 14

@@ -5,7 +5,7 @@ Created on 7 de mar. de 2016
           Ivan Gonzalez Rincon
 '''
 import random
-#Tenemos un marco de 2x2 para controlar la generación de posiciones en los extremos del tablero.
+#Tenemos un marco de 2x2 para controlar la generaci�n de posiciones en los extremos del tablero.
 #Por ello, necesitamos 2 filas y 2 columnas mas a cada lado.
 FILAS = 14
 COLUMNAS = 14
@@ -38,12 +38,12 @@ def llenar_tablero(tablero, nivel=1):
     fila_generada = 0
     columna_generada = 0    
     ultima_fila = FILAS - 5
-    ultima_columna = COLUMNAS - 5
+    ultima_columna = COLUMNAS - 4
     for i in range(0,nivel):
-        fila_generada = random.randint(0,ultima_fila)
+        fila_generada = random.randint(1,ultima_fila)
         columna_generada = random.randint(0,ultima_columna)
         print fila_generada,columna_generada                      
-        modificar_posicion(4, 4, tablero)                  
+        modificar_posicion(10, 9, tablero)                  
                  
 def modificar_posicion(fila,columna,tablero):
     #Cuadrado generado central(3x5)
@@ -110,6 +110,7 @@ while(continuar):
             modificar_posicion(numero_fila-1, numero_columna-2, tablero)
             historial_jugadas.append(tablero)
         elif peticion == "salir":
+            print "¡Hasta la próxima!"
             break
         elif peticion == "deshacer":
         #Codigo que revertira un movimiento realizado por el jugador

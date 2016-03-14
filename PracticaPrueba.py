@@ -24,26 +24,32 @@ def iniciar_tablero(tablero):
             tablero[i].append(".")
 
 def imprimir_tablero(tablero):
-    '''Los rangos estan asi para delimitar la matriz acorde con las peticiones del enunciado.
-    Contamos con un marco de 2 filas y 2 columnas a ambos lados del tablero'''
-    for i in range(2,FILAS-2):
-        for j in range(1,COLUMNAS-3):
-            print tablero[i][j],
-        print""
- 
-'''Este metodo llenara el tablero de juego recibido como parametro y en funcion del nivel seleccionado por el usuario. 
-El nivel por defecto es 1.'''         
+         '''Los rangos estan asi para delimitar la matriz acorde con las peticiones del enunciado.
+      Contamos con un marco de 2 filas y 2 columnas a ambos lados del tablero'''
+      for i in range(2,FILAS-2):
+         for j in range(2,COLUMNAS-2):
+         	for j in range(1,COLUMNAS-3):
+              		print tablero[i][j],
+          print""
+   
+  '''Este metodo llenara el tablero de juego recibido como parametro y en funcion del nivel seleccionado por el usuario. 
+  El nivel por defecto es 1.'''         
 def llenar_tablero(tablero, nivel=1):
-    '''Las columnas sigen la notacion 0-9 y las filas asociadas a las letras la notacion 1-10'''
-    fila_generada = 0
-    columna_generada = 0    
-    ultima_fila = FILAS - 5
-    ultima_columna = COLUMNAS - 5
-    for i in range(0,nivel):
-        fila_generada = random.randint(0,ultima_fila)
-        columna_generada = random.randint(0,ultima_columna)
-        print fila_generada,columna_generada                      
-        modificar_posicion(4, 4, tablero)                  
+     '''Las columnas sigen la notacion 0-9 y las filas asociadas a las letras la notacion 1-10'''
+     fila_generada = 0
+     columna_generada = 0    
+     ultima_fila = FILAS - 2
+     ultima_columna = COLUMNAS - 2
+     ultima_fila = FILAS - 5
+     ultima_columna = COLUMNAS - 5
+      for i in range(0,nivel):
+         fila_generada = random.randint(1,ultima_fila)
+         columna_generada = random.randint(1,ultima_columna)
+         fila_generada = random.randint(0,ultima_fila)
+         columna_generada = random.randint(0,ultima_columna)
+         print fila_generada,columna_generada                      
+         modificar_posicion(5, 5, tablero)                  
+         modificar_posicion(fila_generada, columna_generada, tablero)                  
                  
 def modificar_posicion(fila,columna,tablero):
     #Cuadrado generado central(3x5)

@@ -70,10 +70,16 @@ def comprobar_posicion(tablero,fila,columna):
 '''Metodo que deshara la jugada actual del jugador.
 Debera volver a un estado anterior siempre que el actual no sea el primer turno de juego.
 '''
-def deshacer_jugada(tablero, ronda):
-    if ronda >= 0:
-        tablero = historial_jugadas[ronda-1]
-        ronda -=1
+def deshacer_jugada(tablero):
+    if  len(historial_jugadas)>0:
+        global ronda_actual
+        print "Deshacer:",str(ronda_actual)
+        peticion=historial_jugadas[ronda_actual-1]
+        numero_fila= (ord(letra_fila)-ord("a"))+2
+        numero_columna = int(peticion[1])+2
+        modificar_posicion(numero_fila-1, numero_columna-2, tablero)
+        historial_jugadas.remove(peticion)
+        ronda_actual -=1
     else:
         print "No se puede deshacer la jugada actual"   
 
@@ -92,8 +98,7 @@ def tablero_completado(tablero):
         return True
       
 iniciar_tablero(tablero)
-llenar_tablero(tablero, int(raw_input("Introduzca nivel: ")))
-      
+llenar_tablero(tablero, int(raw_input("Introduzca nivel: ")))  
 #Juego
 continuar = True
 while(continuar):
@@ -103,18 +108,22 @@ while(continuar):
     #Comprobacion de la peticion realizada por el usuario
     try:
         if len(peticion)==2:
-            letra_fila = peticion[0]
+            letra_fila = peticion_correcta[0]
             #Con ord obtenemos el valor ASCII de los caracteres pasados como argumentos.Sumamos 2 para compensar el marco usado  
             numero_fila= (ord(letra_fila)-ord("a"))+2
-            numero_columna = int(peticion[1])+2
+            numero_columna = int(peticion_correcta[1])+2
             modificar_posicion(numero_fila-1, numero_columna-2, tablero)
-            historial_jugadas.append(tablero)
+            #Metemos el tablero actual en la posición correspondiente a la ronda que se está jugando
+            historial_jugadas.insert(ronda_actual, peticion_correcta)
+            print historial_jugadas[ronda_actual]
+            ronda_actual+=1
+            
         elif peticion == "salir":
             print "¡Hasta la próxima!"
             break
         elif peticion == "deshacer":
         #Codigo que revertira un movimiento realizado por el jugador
-            deshacer_jugada(tablero, ronda_actual)
+            deshacer_jugada(tablero)
         else:
             print "Peticion no valida"
         print historial_jugadas

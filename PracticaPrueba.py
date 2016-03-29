@@ -47,7 +47,7 @@ def imprimir_tablero(tablero):
 '''Este metodo llenara el tablero de juego recibido como parametro y en funcion del nivel seleccionado por el usuario. 
 El nivel por defecto es 1.'''         
 def llenar_tablero(tablero, nivel=1):
-    '''Las columnas sigen la notacion 0-9 y las filas asociadas a las letras la notacion 1-10'''
+    '''Las columnas siguen la notacion 0-9 y las filas asociadas a las letras la notacion 1-10'''
     fila_generada = 0
     columna_generada = 0    
     ultima_fila = FILAS - 4
@@ -127,6 +127,7 @@ def comprobar_puntuaciones(nivel,puntuacion):
             print "Puntuación actual:",puntuacion
         else:
            nueva_puntuacion = str(nivel_guardado)+":"+str(toques_nivel) 
+           print "Puntuación obtenida:",toques_nivel
         lineas.append(nueva_puntuacion)
     fichero.close()
     print lineas 
@@ -139,8 +140,12 @@ def comprobar_puntuaciones(nivel,puntuacion):
     
 iniciar_tablero(tablero)
 nivel = int(raw_input("Introduzca nivel: "))
-llenar_tablero(tablero, nivel)  
+while nivel > len(letras):  
+    if nivel > len(letras):
+        print "Nivel demasiado alto, límite->",len(letras)    
+        nivel = int(raw_input("Introduzca nivel: "))
 #Juego
+llenar_tablero(tablero, nivel)
 continuar = True
 while(continuar):
     imprimir_tablero(tablero)   
@@ -170,4 +175,6 @@ while(continuar):
         print historial_jugadas
         continuar = tablero_completado(tablero)
     except IndexError:
-        print "Indice no valido"
+        print "Indice no válido"
+    except ValueError:
+        print "Entrada inválida"

@@ -5,7 +5,7 @@ Created on 7 de mar. de 2016
           Ivan Gonzalez Rincon
 '''
 import random
-#Tenemos un marco de 2x2 para controlar la generaci�n de posiciones en los extremos del tablero.
+#Tenemos un marco de 2x2 para controlar la generaciï¿½n de posiciones en los extremos del tablero.
 #Por ello, necesitamos 2 filas y 2 columnas mas a cada lado.
 FILAS = 14
 COLUMNAS = 14
@@ -17,6 +17,10 @@ puntuacion = 0
 #poder deshacer jugada.
 ronda_actual = 0
 
+#Lista con las letras de las distintas filas
+cont_letras = 0
+letras = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
+
 def iniciar_tablero(tablero):
     for i in range(FILAS):
         tablero.append([])
@@ -26,10 +30,19 @@ def iniciar_tablero(tablero):
 def imprimir_tablero(tablero):
     '''Los rangos estan asi para delimitar la matriz acorde con las peticiones del enunciado.
     Contamos con un marco de 2 filas y 2 columnas a ambos lados del tablero'''
-    for i in range(2,FILAS-2):
+    global cont_letras
+    #Indices de las columnas
+    print " ",
+    for indice in range(0,COLUMNAS-4):
+        print indice,
+    print ""
+    
+    for i in range(2,FILAS-2):   
+        print letras[cont_letras] ,
         for j in range(1,COLUMNAS-3):
             print tablero[i][j],
         print""
+        cont_letras+=1
  
 '''Este metodo llenara el tablero de juego recibido como parametro y en funcion del nivel seleccionado por el usuario. 
 El nivel por defecto es 1.'''         
@@ -108,9 +121,9 @@ def comprobar_puntuaciones(nivel,puntuacion):
         if (toques_nivel > puntuacion) and (nivel_guardado == nivel):
             nueva_puntuacion = str(nivel_guardado)+":"+str(nivel)
             nueva_linea = nueva_puntuacion
-            print "¡Puntuación del nivel mejorada!"
-            print "Puntuación anterior:",toques_nivel
-            print "Puntuación actual:",puntuacion
+            print "Â¡PuntuaciÃ³n del nivel mejorada!"
+            print "PuntuaciÃ³n anterior:",toques_nivel
+            print "PuntuaciÃ³n actual:",puntuacion
             lineas.append(nueva_linea)
     print lineas    
     #fichero.write(lineas)
@@ -133,13 +146,13 @@ while(continuar):
             numero_fila= (ord(letra_fila)-ord("a"))+2
             numero_columna = int(peticion_correcta[1])+2
             modificar_posicion(numero_fila-1, numero_columna-2, tablero)
-            #Metemos el tablero actual en la posición correspondiente a la ronda que se está jugando
+            #Metemos el tablero actual en la posiciÃ³n correspondiente a la ronda que se estÃ¡ jugando
             historial_jugadas.insert(ronda_actual, peticion_correcta)
             print historial_jugadas[ronda_actual]
             ronda_actual+=1
             puntuacion +=1            
         elif peticion == "salir":
-            print "¡Hasta la próxima!"
+            print "Â¡Hasta la prÃ³xima!"
             break
         elif peticion == "deshacer":
         #Codigo que revertira un movimiento realizado por el jugador

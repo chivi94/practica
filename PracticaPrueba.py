@@ -18,7 +18,7 @@ puntuacion = 0
 ronda_actual = 0
 
 #Lista con las letras de las distintas filas
-cont_letras = 0
+#26 niveles en total
 letras = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
 
 def iniciar_tablero(tablero):
@@ -30,7 +30,7 @@ def iniciar_tablero(tablero):
 def imprimir_tablero(tablero):
     '''Los rangos estan asi para delimitar la matriz acorde con las peticiones del enunciado.
     Contamos con un marco de 2 filas y 2 columnas a ambos lados del tablero'''
-    global cont_letras
+    cont_letras = 0
     #Indices de las columnas
     print " ",
     for indice in range(0,COLUMNAS-4):
@@ -56,7 +56,7 @@ def llenar_tablero(tablero, nivel=1):
         fila_generada = random.randint(1,ultima_fila)
         columna_generada = random.randint(0,ultima_columna)
         print fila_generada,columna_generada                      
-        modificar_posicion(10, 9, tablero)                  
+        modificar_posicion(fila_generada, columna_generada, tablero)                  
                  
 def modificar_posicion(fila,columna,tablero):
     #Cuadrado generado central(3x5)
@@ -106,14 +106,14 @@ def tablero_completado(tablero):
     #Si todo el tablero esta desactivado, el programa termina
     if contador == 0:
         comprobar_puntuaciones(nivel, puntuacion)
+        print "Enhorabuena, has completado el nivel,¡Hasta la próxima!"
         return False
     #En caso contrario, continua
     else:
         return True
 
 def comprobar_puntuaciones(nivel,puntuacion):
-    
-    fichero = open("puntuaciones.txt","r+")
+    fichero = open("puntuaciones.txt","r")
     lineas = []
     for linea in fichero:
         punt = linea.split(":")
@@ -126,8 +126,12 @@ def comprobar_puntuaciones(nivel,puntuacion):
             print "Puntuación anterior:",toques_nivel
             print "Puntuación actual:",puntuacion
             lineas.append(nueva_linea)
-    print lineas    
-    #fichero.write(lineas)
+    fichero.close()
+    print lineas 
+    #Volcamos el array con las nuevas puntuaciones
+    fichero = open("puntuaciones.txt","w")
+    for linea in lineas:
+        fichero.write(linea)
     fichero.close()  
     
 iniciar_tablero(tablero)

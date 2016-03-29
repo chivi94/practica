@@ -112,6 +112,7 @@ def tablero_completado(tablero):
         return True
 
 def comprobar_puntuaciones(nivel,puntuacion):
+    
     fichero = open("puntuaciones.txt","r+")
     lineas = []
     for linea in fichero:
@@ -121,9 +122,9 @@ def comprobar_puntuaciones(nivel,puntuacion):
         if (toques_nivel > puntuacion) and (nivel_guardado == nivel):
             nueva_puntuacion = str(nivel_guardado)+":"+str(nivel)
             nueva_linea = nueva_puntuacion
-            print "Â¡PuntuaciÃ³n del nivel mejorada!"
-            print "PuntuaciÃ³n anterior:",toques_nivel
-            print "PuntuaciÃ³n actual:",puntuacion
+            print "¡Puntuación del nivel mejorada!"
+            print "Puntuación anterior:",toques_nivel
+            print "Puntuación actual:",puntuacion
             lineas.append(nueva_linea)
     print lineas    
     #fichero.write(lineas)
@@ -152,7 +153,7 @@ while(continuar):
             ronda_actual+=1
             puntuacion +=1            
         elif peticion == "salir":
-            print "Â¡Hasta la prÃ³xima!"
+            print "¡Hasta la próxima!"
             break
         elif peticion == "deshacer":
         #Codigo que revertira un movimiento realizado por el jugador

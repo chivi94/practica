@@ -50,8 +50,8 @@ def llenar_tablero(tablero, nivel=1):
     '''Las columnas sigen la notacion 0-9 y las filas asociadas a las letras la notacion 1-10'''
     fila_generada = 0
     columna_generada = 0    
-    ultima_fila = FILAS - 5
-    ultima_columna = COLUMNAS - 4
+    ultima_fila = FILAS - 4
+    ultima_columna = COLUMNAS - 5
     for i in range(0,nivel):
         fila_generada = random.randint(1,ultima_fila)
         columna_generada = random.randint(0,ultima_columna)
@@ -119,19 +119,22 @@ def comprobar_puntuaciones(nivel,puntuacion):
         punt = linea.split(":")
         nivel_guardado = int(punt[0])
         toques_nivel =int(punt[1])
-        if (toques_nivel > puntuacion) and (nivel_guardado == nivel):
-            nueva_puntuacion = str(nivel_guardado)+":"+str(nivel)
-            nueva_linea = nueva_puntuacion
+        
+        if (toques_nivel > puntuacion) and (nivel_guardado == nivel): 
+            nueva_puntuacion = str(nivel_guardado)+":"+str(puntuacion)
             print "¡Puntuación del nivel mejorada!"
             print "Puntuación anterior:",toques_nivel
             print "Puntuación actual:",puntuacion
-            lineas.append(nueva_linea)
+        else:
+           nueva_puntuacion = str(nivel_guardado)+":"+str(toques_nivel) 
+        lineas.append(nueva_puntuacion)
     fichero.close()
     print lineas 
     #Volcamos el array con las nuevas puntuaciones
     fichero = open("puntuaciones.txt","w")
     for linea in lineas:
         fichero.write(linea)
+        fichero.write("\n")
     fichero.close()  
     
 iniciar_tablero(tablero)

@@ -92,13 +92,33 @@ def tablero_completado(tablero):
                 contador+=1
     #Si todo el tablero esta desactivado, el programa termina
     if contador == 0:
+        comprobar_puntuaciones(nivel, puntuacion)
         return False
     #En caso contrario, continua
     else:
         return True
-      
+
+def comprobar_puntuaciones(nivel,puntuacion):
+    fichero = open("puntuaciones.txt","r+")
+    lineas = []
+    for linea in fichero:
+        punt = linea.split(":")
+        nivel_guardado = int(punt[0])
+        toques_nivel =int(punt[1])
+        if (toques_nivel > puntuacion) and (nivel_guardado == nivel):
+            nueva_puntuacion = str(nivel_guardado)+":"+str(nivel)
+            nueva_linea = nueva_puntuacion
+            print "¡Puntuación del nivel mejorada!"
+            print "Puntuación anterior:",toques_nivel
+            print "Puntuación actual:",puntuacion
+            lineas.append(nueva_linea)
+    print lineas    
+    #fichero.write(lineas)
+    fichero.close()  
+    
 iniciar_tablero(tablero)
-llenar_tablero(tablero, int(raw_input("Introduzca nivel: ")))  
+nivel = int(raw_input("Introduzca nivel: "))
+llenar_tablero(tablero, nivel)  
 #Juego
 continuar = True
 while(continuar):
@@ -117,7 +137,7 @@ while(continuar):
             historial_jugadas.insert(ronda_actual, peticion_correcta)
             print historial_jugadas[ronda_actual]
             ronda_actual+=1
-            
+            puntuacion +=1            
         elif peticion == "salir":
             print "¡Hasta la próxima!"
             break

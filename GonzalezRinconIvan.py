@@ -7,7 +7,7 @@ Created on 7 de mar. de 2016
 import random
 #Tenemos un marco de 2x2 para controlar la generaciï¿½n de posiciones en los extremos del tablero.
 #Por ello, necesitamos 2 filas y 2 columnas mas a cada lado.
-FILAS = 14
+FILAS = 16
 COLUMNAS = 14
 
 tablero = []
@@ -54,8 +54,7 @@ def llenar_tablero(tablero, nivel=1):
     ultima_columna = COLUMNAS - 5
     for i in range(0,nivel):
         fila_generada = random.randint(1,ultima_fila)
-        columna_generada = random.randint(0,ultima_columna)
-        print fila_generada,columna_generada                      
+        columna_generada = random.randint(0,ultima_columna)                     
         modificar_posicion(fila_generada, columna_generada, tablero)                  
                  
 def modificar_posicion(fila,columna,tablero):
@@ -119,18 +118,16 @@ def comprobar_puntuaciones(nivel,puntuacion):
         punt = linea.split(":")
         nivel_guardado = int(punt[0])
         toques_nivel =int(punt[1])
-        
+
         if (toques_nivel > puntuacion) and (nivel_guardado == nivel): 
             nueva_puntuacion = str(nivel_guardado)+":"+str(puntuacion)
             print "¡Puntuación del nivel mejorada!"
             print "Puntuación anterior:",toques_nivel
             print "Puntuación actual:",puntuacion
         else:
-           nueva_puntuacion = str(nivel_guardado)+":"+str(toques_nivel) 
-           print "Puntuación obtenida:",toques_nivel
+           nueva_puntuacion = str(nivel_guardado)+":"+str(toques_nivel)
         lineas.append(nueva_puntuacion)
-    fichero.close()
-    print lineas 
+    fichero.close() 
     #Volcamos el array con las nuevas puntuaciones
     fichero = open("puntuaciones.txt","w")
     for linea in lineas:
@@ -138,13 +135,20 @@ def comprobar_puntuaciones(nivel,puntuacion):
         fichero.write("\n")
     fichero.close()  
     
-iniciar_tablero(tablero)
-nivel = int(raw_input("Introduzca nivel: "))
-while nivel > len(letras):  
-    if nivel > len(letras):
-        print "Nivel demasiado alto, límite->",len(letras)    
+
+correcto = False
+while not correcto: 
+    try:
         nivel = int(raw_input("Introduzca nivel: "))
+        if nivel > len(letras):
+            print "Nivel demasiado alto, límite->",len(letras)
+        else:
+            correcto = True
+    except ValueError:
+        print "Entrada inválida"
+        
 #Juego
+iniciar_tablero(tablero)
 llenar_tablero(tablero, nivel)
 continuar = True
 while(continuar):
@@ -161,7 +165,6 @@ while(continuar):
             modificar_posicion(numero_fila-1, numero_columna-2, tablero)
             #Metemos el tablero actual en la posiciÃ³n correspondiente a la ronda que se estÃ¡ jugando
             historial_jugadas.insert(ronda_actual, peticion_correcta)
-            print historial_jugadas[ronda_actual]
             ronda_actual+=1
             puntuacion +=1            
         elif peticion == "salir":
@@ -172,7 +175,6 @@ while(continuar):
             deshacer_jugada(tablero)
         else:
             print "Peticion no valida"
-        print historial_jugadas
         continuar = tablero_completado(tablero)
     except IndexError:
         print "Indice no válido"

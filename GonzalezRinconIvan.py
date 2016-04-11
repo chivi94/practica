@@ -7,7 +7,7 @@ Created on 7 de mar. de 2016
 import random
 #Tenemos un marco de 2x2 para controlar la generaciï¿½n de posiciones en los extremos del tablero.
 #Por ello, necesitamos 2 filas y 2 columnas mas a cada lado.
-FILAS = 16
+FILAS = 14
 COLUMNAS = 14
 
 tablero = []
@@ -21,12 +21,14 @@ ronda_actual = 0
 #26 niveles en total
 letras = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
 
+#Método que inicia la matriz de juego(tablero) con puntos
 def iniciar_tablero(tablero):
     for i in range(FILAS):
         tablero.append([])
         for j in range(COLUMNAS):
             tablero[i].append(".")
 
+#Método que muestra el tablero al usuario
 def imprimir_tablero(tablero):
     '''Los rangos estan asi para delimitar la matriz acorde con las peticiones del enunciado.
     Contamos con un marco de 2 filas y 2 columnas a ambos lados del tablero'''
@@ -44,10 +46,10 @@ def imprimir_tablero(tablero):
         print""
         cont_letras+=1
  
-'''Este metodo llenara el tablero de juego recibido como parametro y en funcion del nivel seleccionado por el usuario. 
+'''Este método llenará el tablero de juego recibido como parámetro y en función del nivel seleccionado por el usuario. 
 El nivel por defecto es 1.'''         
 def llenar_tablero(tablero, nivel=1):
-    '''Las columnas siguen la notacion 0-9 y las filas asociadas a las letras la notacion 1-10'''
+    '''Las columnas siguen la notación 0-9 y las filas asociadas a las letras la notación 1-10'''
     fila_generada = 0
     columna_generada = 0    
     ultima_fila = FILAS - 4
@@ -56,7 +58,8 @@ def llenar_tablero(tablero, nivel=1):
         fila_generada = random.randint(1,ultima_fila)
         columna_generada = random.randint(0,ultima_columna)                     
         modificar_posicion(fila_generada, columna_generada, tablero)                  
-                 
+
+#Método que genera la cruz de 'x' en el tablero en función de la posición pasada como parámetro
 def modificar_posicion(fila,columna,tablero):
     #Cuadrado generado central(3x5)
     fila = fila+1
@@ -72,15 +75,16 @@ def modificar_posicion(fila,columna,tablero):
     for fil_inf in range(fila+2,fila+3):
         for col_inf in range (columna-1,columna+2):
             comprobar_posicion(tablero, fil_inf, col_inf)
-            
+
+#Método que modificará la posición pasada como parámetro, en el tablero indicado
 def comprobar_posicion(tablero,fila,columna): 
         if tablero[fila][columna] == "x":       
             tablero[fila][columna] = "."
         else:
             tablero[fila][columna] = "x"
 
-'''Metodo que deshara la jugada actual del jugador.
-Debera volver a un estado anterior siempre que el actual no sea el primer turno de juego.
+'''Método que deshará la jugada actual del jugador.
+Deberá volver a un estado anterior siempre que el actual no sea el primer turno de juego.
 '''
 def deshacer_jugada(tablero):
     if  len(historial_jugadas)>0:
@@ -95,7 +99,7 @@ def deshacer_jugada(tablero):
     else:
         print "No se puede deshacer la jugada actual"   
 
-#Metodo que comprobara si se ha completado el tablero
+#Método que comprobará si se ha completado el tablero
 def tablero_completado(tablero):
     contador = 0
     for i in range(2,FILAS-2):
@@ -105,12 +109,9 @@ def tablero_completado(tablero):
     #Si todo el tablero esta desactivado, el programa termina
     if contador == 0:
         comprobar_puntuaciones(nivel, puntuacion)
-        print "Enhorabuena, has completado el nivel,¡Hasta la próxima!"
-        return False
-    #En caso contrario, continua
-    else:
-        return True
-
+        print "Enhorabuena, has completado el nivel"
+    
+#Método que realizará la comprobación y escritura del fichero de puntuaciones.
 def comprobar_puntuaciones(nivel,puntuacion):
     fichero = open("puntuaciones.txt","r")
     lineas = []
@@ -136,47 +137,64 @@ def comprobar_puntuaciones(nivel,puntuacion):
     fichero.close()  
     
 
-correcto = False
-while not correcto: 
+
+#Juego
+#Banderas de ejecución principal del juego
+continuar = True
+seguir = True
+#Bandera de petición de repetición de juego
+rehacer = True
+while seguir: 
     try:
         nivel = int(raw_input("Introduzca nivel: "))
         if nivel > len(letras):
             print "Nivel demasiado alto, límite->",len(letras)
         else:
-            correcto = True
+            #Si el nivel es válido, comienza el juego.
+            while continuar:
+                iniciar_tablero(tablero)
+                llenar_tablero(tablero, nivel)
+                imprimir_tablero(tablero)   
+                peticion = raw_input("Seleccione coordenadas:")
+                peticion_correcta = peticion.replace(" ", "").lower()
+                #Comprobacion de la peticion realizada por el usuario
+                if len(peticion)==2:
+                    letra_fila = peticion_correcta[0]
+                    #Con ord obtenemos el valor ASCII de los caracteres pasados como argumentos.Sumamos 2 para compensar el marco usado  
+                    numero_fila= (ord(letra_fila)-ord("a"))+2
+                    numero_columna = int(peticion_correcta[1])+2
+                    modificar_posicion(numero_fila-1, numero_columna-2, tablero)
+                    #Metemos el tablero actual en la posiciÃ³n correspondiente a la ronda que se estÃ¡ jugando
+                    historial_jugadas.insert(ronda_actual, peticion_correcta)
+                    ronda_actual+=1
+                    puntuacion +=1            
+                elif peticion == "salir":
+                    continuar = False
+                    seguir = False
+                elif peticion == "deshacer":
+                    #Codigo que revertira un movimiento realizado por el jugador
+                    deshacer_jugada(tablero)
+                else:
+                    print "Peticion no valida"
+                continuar = tablero_completado(tablero)
+            #Cuando termina el tablero, preguntamos si el usuario quiere volver a jugar
+            while rehacer:
+                repetir = raw_input("¿Desea volver a jugar:? S/N: ")
+                if repetir.lower() == "s" or repetir.lower() == "si":      
+                #Si el usuario elige repetir, continuamos la ejecución del programa
+                    continuar = True
+                    seguir = True
+                    rehacer = False
+                elif repetir.lower() == "n" or repetir.lower() == "no":
+                    seguir = False
+                    rehacer = False
+                else:
+                    print "Opción no válida"
+            #Ponemos la bandera a True de nuevo para poder controlar iteraciones posteriores
+            rehacer = True                   
     except ValueError:
         print "Entrada inválida"
-        
-#Juego
-iniciar_tablero(tablero)
-llenar_tablero(tablero, nivel)
-continuar = True
-while(continuar):
-    imprimir_tablero(tablero)   
-    peticion = raw_input("Seleccione coordenadas:")
-    peticion_correcta = peticion.replace(" ", "").lower()
-    #Comprobacion de la peticion realizada por el usuario
-    try:
-        if len(peticion)==2:
-            letra_fila = peticion_correcta[0]
-            #Con ord obtenemos el valor ASCII de los caracteres pasados como argumentos.Sumamos 2 para compensar el marco usado  
-            numero_fila= (ord(letra_fila)-ord("a"))+2
-            numero_columna = int(peticion_correcta[1])+2
-            modificar_posicion(numero_fila-1, numero_columna-2, tablero)
-            #Metemos el tablero actual en la posiciÃ³n correspondiente a la ronda que se estÃ¡ jugando
-            historial_jugadas.insert(ronda_actual, peticion_correcta)
-            ronda_actual+=1
-            puntuacion +=1            
-        elif peticion == "salir":
-            print "¡Hasta la próxima!"
-            break
-        elif peticion == "deshacer":
-        #Codigo que revertira un movimiento realizado por el jugador
-            deshacer_jugada(tablero)
-        else:
-            print "Peticion no valida"
-        continuar = tablero_completado(tablero)
     except IndexError:
         print "Indice no válido"
-    except ValueError:
-        print "Entrada inválida"
+        
+print "¡Hasta la próxima!"    

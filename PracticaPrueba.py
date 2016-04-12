@@ -25,12 +25,14 @@ ronda_actual = 0
 #26 niveles en total
 letras = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"]
 
+#Método que inicia el tablero
 def iniciar_tablero(tablero):
     for i in range(FILAS):
         tablero.append([])
         for j in range(COLUMNAS):
             tablero[i].append(".")
 
+#Método que imprime el tablero
 def imprimir_tablero(tablero):
     '''Los rangos estan asi para delimitar la matriz acorde con las peticiones del enunciado.
     Contamos con un marco de 2 filas y 2 columnas a ambos lados del tablero'''
@@ -62,6 +64,7 @@ def llenar_tablero(tablero, nivel=1):
         print fila_generada,columna_generada                      
         modificar_posicion(fila_generada, columna_generada, tablero)                  
                  
+#Método que realiza golpes en el tablero en función de la posición pasada
 def modificar_posicion(fila,columna,tablero):
     #Cuadrado generado central(3x5)
     fila = fila+1
@@ -77,7 +80,8 @@ def modificar_posicion(fila,columna,tablero):
     for fil_inf in range(fila+2,fila+3):
         for col_inf in range (columna-1,columna+2):
             comprobar_posicion(tablero, fil_inf, col_inf)
-            
+ 
+#Método que comprueba el contenido de la celda del tablero           
 def comprobar_posicion(tablero,fila,columna): 
         if tablero[fila][columna] == "x":       
             tablero[fila][columna] = "."
@@ -114,8 +118,9 @@ def tablero_completado(tablero):
     else:
         return True
 
-def comprobar_puntuaciones(nivel,puntuacion):
-    fichero = open("puntuaciones.txt","r")
+#Método que lee el fichero y lo lee y modifica en función de la puntuación que haya obtenido el usuario
+def comprobar_puntuaciones(nivel,puntuacion,ruta):
+    fichero = open(ruta,"r")
     lineas = []
     for linea in fichero:
         punt = linea.split(":")
@@ -132,16 +137,18 @@ def comprobar_puntuaciones(nivel,puntuacion):
         lineas.append(nueva_puntuacion)
     fichero.close()
     #Volcamos el array con las nuevas puntuaciones
-    fichero = open("puntuaciones.txt","w")
+    fichero = open(ruta,"w")
     for linea in lineas:
         fichero.write(linea)
         fichero.write("\n")
     fichero.close()  
 
+#Método que inicia un array con el formato usado para almacenar las puntuaciones
 def formato_puntuaciones(puntuaciones):
     for i in range (1,len(letras)+1):
         puntuaciones.append(str(i)+":"+str(50))
 
+#Método que inicia el fichero de puntuaciones si dicho fichero no existe
 def iniciar_fichero(puntuaciones,ruta):
     #Volcamos el array con las nuevas puntuaciones
     fichero = open(ruta,"w")
@@ -149,7 +156,8 @@ def iniciar_fichero(puntuaciones,ruta):
         fichero.write(puntuacion)
         fichero.write("\n")
     fichero.close() 
-     
+ 
+#Método que pideal al usuario el nivel a jugar    
 def peticion_nivel(tablero):
     correcto = False
     while not correcto:
@@ -201,10 +209,10 @@ while continuar:
         print "Entrada inválida"
     finally:
         try:
-            comprobar_puntuaciones(nivel, puntuacion)
+            comprobar_puntuaciones(nivel, puntuacion, ruta_fichero)
         except IOError:
             print "El fichero no existe, procedo a crearlo..."
             formato_puntuaciones(puntuaciones_iniciales)
             iniciar_fichero(puntuaciones_iniciales,ruta_fichero)
-            comprobar_puntuaciones(nivel, puntuacion)
+            comprobar_puntuaciones(nivel, puntuacion,ruta_fichero)
             print "¡Hasta la próxima!"

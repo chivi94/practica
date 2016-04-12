@@ -5,6 +5,10 @@ Created on 7 de mar. de 2016
           Ivan Gonzalez Rincon
 '''
 import random
+
+#Variables usadas para iniciar el fichero
+puntuaciones_iniciales = []
+ruta_fichero = "puntuaciones.txt"
 #Tenemos un marco de 2x2 para controlar la generaciï¿½n de posiciones en los extremos del tablero.
 #Por ello, necesitamos 2 filas y 2 columnas mas a cada lado.
 FILAS = 14
@@ -104,7 +108,6 @@ def tablero_completado(tablero):
                 contador+=1
     #Si todo el tablero esta desactivado, el programa termina
     if contador == 0:
-        comprobar_puntuaciones(nivel, puntuacion)
         print "Enhorabuena, has completado el nivel,¡Hasta la próxima!"
         return False
     #En caso contrario, continua
@@ -134,7 +137,19 @@ def comprobar_puntuaciones(nivel,puntuacion):
         fichero.write(linea)
         fichero.write("\n")
     fichero.close()  
-    
+
+def formato_puntuaciones(puntuaciones):
+    for i in range (1,50):
+        puntuaciones.append(i+":"+50)
+
+def iniciar_fichero(puntuaciones,ruta):
+    #Volcamos el array con las nuevas puntuaciones
+    fichero = open(ruta,"w")
+    for puntuacion in puntuaciones:
+        fichero.write(puntuacion)
+        fichero.write("\n")
+    fichero.close() 
+     
 def peticion_nivel(tablero):
     correcto = False
     while not correcto:
@@ -148,6 +163,8 @@ def peticion_nivel(tablero):
             print "Entrada no válida"  
             
     return nivel
+
+
 iniciar_tablero(tablero)
 nivel=peticion_nivel(tablero)  
 llenar_tablero(tablero, nivel)
@@ -182,4 +199,9 @@ while continuar:
         print "Indice no válido"
     except ValueError:
         print "Entrada inválida"
+    except IOError:
+        formato_puntuaciones(puntuaciones_iniciales)
+        iniciar_fichero(puntuaciones_iniciales,ruta_fichero)
+    finally:
+        comprobar_puntuaciones(nivel, puntuacion)
 print "¡Hasta la próxima!"

@@ -86,7 +86,6 @@ Debera volver a un estado anterior siempre que el actual no sea el primer turno 
 def deshacer_jugada(tablero):
     if  len(historial_jugadas)>0:
         global ronda_actual
-        print "Deshacer:",str(ronda_actual)
         peticion=historial_jugadas[ronda_actual-1]
         numero_fila= (ord(letra_fila)-ord("a"))+2
         numero_columna = int(peticion[1])+2
@@ -127,10 +126,8 @@ def comprobar_puntuaciones(nivel,puntuacion):
             print "Puntuación actual:",puntuacion
         else:
            nueva_puntuacion = str(nivel_guardado)+":"+str(toques_nivel) 
-           print "Puntuación obtenida:",toques_nivel
         lineas.append(nueva_puntuacion)
     fichero.close()
-    print lineas 
     #Volcamos el array con las nuevas puntuaciones
     fichero = open("puntuaciones.txt","w")
     for linea in lineas:
@@ -138,16 +135,25 @@ def comprobar_puntuaciones(nivel,puntuacion):
         fichero.write("\n")
     fichero.close()  
     
+def peticion_nivel(tablero):
+    correcto = False
+    while not correcto:
+        try:
+            nivel = int(raw_input("Introduzca nivel:"))  
+            if nivel <= 0 or nivel > len(letras):
+                print "Nivel no válido, máximo:",len(letras)
+            else:
+                correcto = True
+        except ValueError:
+            print "Entrada no válida"  
+            
+    return nivel
 iniciar_tablero(tablero)
-nivel = int(raw_input("Introduzca nivel: "))
-while nivel > len(letras):  
-    if nivel > len(letras):
-        print "Nivel demasiado alto, límite->",len(letras)    
-        nivel = int(raw_input("Introduzca nivel: "))
-#Juego
+nivel=peticion_nivel(tablero)  
 llenar_tablero(tablero, nivel)
+#Juego
 continuar = True
-while(continuar):
+while continuar:
     imprimir_tablero(tablero)   
     peticion = raw_input("Seleccione coordenadas:")
     peticion_correcta = peticion.replace(" ", "").lower()
@@ -163,18 +169,17 @@ while(continuar):
             historial_jugadas.insert(ronda_actual, peticion_correcta)
             print historial_jugadas[ronda_actual]
             ronda_actual+=1
-            puntuacion +=1            
+            puntuacion +=1  
+            continuar = tablero_completado(tablero)          
         elif peticion == "salir":
-            print "¡Hasta la próxima!"
-            break
+            continuar = False
         elif peticion == "deshacer":
         #Codigo que revertira un movimiento realizado por el jugador
             deshacer_jugada(tablero)
         else:
-            print "Peticion no valida"
-        print historial_jugadas
-        continuar = tablero_completado(tablero)
+            print "Peticion no valida"  
     except IndexError:
         print "Indice no válido"
     except ValueError:
         print "Entrada inválida"
+print "¡Hasta la próxima!"

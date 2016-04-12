@@ -139,8 +139,8 @@ def comprobar_puntuaciones(nivel,puntuacion):
     fichero.close()  
 
 def formato_puntuaciones(puntuaciones):
-    for i in range (1,50):
-        puntuaciones.append(i+":"+50)
+    for i in range (1,len(letras)+1):
+        puntuaciones.append(str(i)+":"+str(50))
 
 def iniciar_fichero(puntuaciones,ruta):
     #Volcamos el array con las nuevas puntuaciones
@@ -199,9 +199,12 @@ while continuar:
         print "Indice no válido"
     except ValueError:
         print "Entrada inválida"
-    except IOError:
-        formato_puntuaciones(puntuaciones_iniciales)
-        iniciar_fichero(puntuaciones_iniciales,ruta_fichero)
     finally:
-        comprobar_puntuaciones(nivel, puntuacion)
-print "¡Hasta la próxima!"
+        try:
+            comprobar_puntuaciones(nivel, puntuacion)
+        except IOError:
+            print "El fichero no existe, procedo a crearlo..."
+            formato_puntuaciones(puntuaciones_iniciales)
+            iniciar_fichero(puntuaciones_iniciales,ruta_fichero)
+            comprobar_puntuaciones(nivel, puntuacion)
+            print "¡Hasta la próxima!"

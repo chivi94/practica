@@ -5,6 +5,7 @@ Created on 7 de mar. de 2016
           Ivan Gonzalez Rincon
 '''
 import random
+from __builtin__ import True
 
 #Variables usadas para iniciar el fichero
 puntuaciones_iniciales = []
@@ -112,7 +113,7 @@ def tablero_completado(tablero):
                 contador+=1
     #Si todo el tablero esta desactivado, el programa termina
     if contador == 0:
-        print "Enhorabuena, has completado el nivel,¡Hasta la próxima!"
+        print "Enhorabuena, has completado el nivel"
         return False
     #En caso contrario, continua
     else:
@@ -127,7 +128,7 @@ def comprobar_puntuaciones(nivel,puntuacion,ruta):
         nivel_guardado = int(punt[0])
         toques_nivel =int(punt[1])
         
-        if (toques_nivel > puntuacion) and (nivel_guardado == nivel): 
+        if (toques_nivel > puntuacion) and (nivel_guardado == nivel) and (puntuacion>0): 
             nueva_puntuacion = str(nivel_guardado)+":"+str(puntuacion)
             print "¡Puntuación del nivel mejorada!"
             print "Puntuación anterior:",toques_nivel
@@ -178,41 +179,42 @@ nivel=peticion_nivel(tablero)
 llenar_tablero(tablero, nivel)
 #Juego
 continuar = True
-while continuar:
-    imprimir_tablero(tablero)   
-    peticion = raw_input("Seleccione coordenadas:")
-    peticion_correcta = peticion.replace(" ", "").lower()
-    #Comprobacion de la peticion realizada por el usuario
-    try:
-        if len(peticion)==2:
-            letra_fila = peticion_correcta[0]
-            #Con ord obtenemos el valor ASCII de los caracteres pasados como argumentos.Sumamos 2 para compensar el marco usado  
-            numero_fila= (ord(letra_fila)-ord("a"))+2
-            numero_columna = int(peticion_correcta[1])+2
-            modificar_posicion(numero_fila-1, numero_columna-2, tablero)
-            #Metemos el tablero actual en la posiciÃ³n correspondiente a la ronda que se estÃ¡ jugando
-            historial_jugadas.insert(ronda_actual, peticion_correcta)
-            print historial_jugadas[ronda_actual]
-            ronda_actual+=1
-            puntuacion +=1  
-            continuar = tablero_completado(tablero)          
-        elif peticion == "salir":
-            continuar = False
-        elif peticion == "deshacer":
-        #Codigo que revertira un movimiento realizado por el jugador
-            deshacer_jugada(tablero)
-        else:
-            print "Peticion no valida"  
-    except IndexError:
-        print "Indice no válido"
-    except ValueError:
-        print "Entrada inválida"
-    finally:
+try:
+    while continuar:
+        imprimir_tablero(tablero)   
+        peticion = raw_input("Seleccione coordenadas:")
+        peticion_correcta = peticion.replace(" ", "").lower()
+        #Comprobacion de la peticion realizada por el usuario
         try:
-            comprobar_puntuaciones(nivel, puntuacion, ruta_fichero)
-        except IOError:
-            print "El fichero no existe, procedo a crearlo..."
-            formato_puntuaciones(puntuaciones_iniciales)
-            iniciar_fichero(puntuaciones_iniciales,ruta_fichero)
-            comprobar_puntuaciones(nivel, puntuacion,ruta_fichero)
-            print "¡Hasta la próxima!"
+            if len(peticion)==2:
+                letra_fila = peticion_correcta[0]
+                #Con ord obtenemos el valor ASCII de los caracteres pasados como argumentos.Sumamos 2 para compensar el marco usado  
+                numero_fila= (ord(letra_fila)-ord("a"))+2
+                numero_columna = int(peticion_correcta[1])+2
+                modificar_posicion(numero_fila-1, numero_columna-2, tablero)
+                #Metemos el tablero actual en la posiciÃ³n correspondiente a la ronda que se estÃ¡ jugando
+                historial_jugadas.insert(ronda_actual, peticion_correcta)
+                print historial_jugadas[ronda_actual]
+                ronda_actual+=1
+                puntuacion +=1  
+                continuar = tablero_completado(tablero)          
+            elif peticion == "salir":
+                continuar = False
+            elif peticion == "deshacer":
+                #Codigo que revertira un movimiento realizado por el jugador
+                deshacer_jugada(tablero)
+            else:
+                print "Peticion no valida"  
+        except IndexError:
+            print "Indice no válido"
+        except ValueError:
+            print "Entrada inválida"
+finally:
+    try:
+        comprobar_puntuaciones(nivel, puntuacion, ruta_fichero)
+        print "¡Hasta la próxima!"
+    except IOError:
+        formato_puntuaciones(puntuaciones_iniciales)
+        iniciar_fichero(puntuaciones_iniciales,ruta_fichero)
+        comprobar_puntuaciones(nivel, puntuacion,ruta_fichero)
+        print "¡Hasta la próxima!"

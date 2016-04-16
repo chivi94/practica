@@ -212,9 +212,8 @@ try:
 finally:
     try:
         comprobar_puntuaciones(nivel, puntuacion, ruta_fichero)
-        print "¡Hasta la próxima!"
     except IOError:
         formato_puntuaciones(puntuaciones_iniciales)
         iniciar_fichero(puntuaciones_iniciales,ruta_fichero)
         comprobar_puntuaciones(nivel, puntuacion,ruta_fichero)
-        print "¡Hasta la próxima!"
+    print "¡Hasta la próxima!"

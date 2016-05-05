@@ -38,7 +38,7 @@ class Practica:
         self.btn_deshacer.set_image(self.image_refresh);
         #Acceso al tablero
         self.tabla = self.interfaz.get_object("tbl_tablero");
-        self.tabla.resize(self.filas, self.columnas);
+        self.tabla.resize(self.filas+4, self.columnas+4);
         self.tabla.set_homogeneous(True);
         self.tabla.show();
         
@@ -59,7 +59,8 @@ class Practica:
                 self.event_box.add(self.img_desactivado);
                 self.event_box.connect('button-press-event',self.golpeo);
                 self.event_box.show();
-                self.tabla.attach(self.event_box,self.x,self.x+1,self.y,self.y+1);
+                #Las posiciones se indican así para poder dejar un marco de 2 filas y 2 columnas tanto a derecha como izquierda
+                self.tabla.attach(self.event_box,self.x+2,self.x+3,self.y+2,self.y+3);
                 self.x +=1;
             self.x = 0;
             self.y +=1;
@@ -87,5 +88,5 @@ if __name__ == '__main__':
     ruta_boton = "iconos\refresh.png";
     ruta_desactivado = "iconos\desactivado.png";
     ruta_activado = "iconos\activo.png";
-    practica = Practica(6,6,ruta_desactivado,ruta_activado,ruta_boton);
+    practica = Practica(10,10,ruta_desactivado,ruta_activado,ruta_boton);
     gtk.main();

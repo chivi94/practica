@@ -39,6 +39,7 @@ class Practica:
         #Acceso al tablero
         self.tabla = self.interfaz.get_object("tbl_tablero");
         self.tabla.resize(self.filas, self.columnas);
+        self.tabla.set_homogeneous(True);
         self.tabla.show();
         
         
@@ -48,12 +49,11 @@ class Practica:
             for j in range(self.columnas):
                 #Creamos imágenes y las añadimos al tablero
                 self.img_desactivado = gtk.Image();
-                self.img_desactivado.set_from_file(self.ruta_desactivado);
-                #Indice de las imagenes              
-                self.name = str(i)+"."+str(j);
-                #Indice + estado
-                self.img_desactivado.set_name(self.name+":"+"desactivado");
+                self.img_desactivado.set_from_file(self.ruta_desactivado); 
+                self.img_desactivado.set_name("desactivado");
                 self.img_desactivado.show();
+                self.name = str(i)+"--"+str(j);
+                self.img_desactivado.set_name(self.name);
                 #EventBox sirve para poder controlar los eventos de click en la imagen
                 self.event_box = gtk.EventBox();
                 self.event_box.add(self.img_desactivado);
@@ -73,21 +73,19 @@ class Practica:
         gtk.main_quit();
         
     #Evento de click en imagen de tablero
-    def golpeo(self,widget,data = None):       
-        image_hijo = widget.get_child()
-        #Cogemos el nombre del hijo. Tiene indice y estado. Ahora solo queremos comprobar el estado
-        nombre = image_hijo.get_name().split(":");
-        #Dependiendo del estado actual, realizamos una u otra acción
-        if nombre[1] == "desactivado":        
+    def golpeo(self,widget,data = None):
+        image_hijo = widget.get_child();
+        if image_hijo.get_name() == "desactivado":
             image_hijo.set_from_file(self.ruta_desactivado);
-            image_hijo.set_name(nombre[0]+":activado");
+            image_hijo.set_name("activado");
         else:
             image_hijo.set_from_file(self.ruta_activado);
-            image_hijo.set_name(nombre[0]+":desactivado");
+            image_hijo.set_name("desactivado");
+        
         
 if __name__ == '__main__':
     ruta_boton = "iconos\refresh.png";
     ruta_desactivado = "iconos\desactivado.png";
     ruta_activado = "iconos\activo.png";
-    practica = Practica(5,10,ruta_desactivado,ruta_activado,ruta_boton);
+    practica = Practica(6,6,ruta_desactivado,ruta_activado,ruta_boton);
     gtk.main();

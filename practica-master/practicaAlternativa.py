@@ -55,7 +55,7 @@ class Practica:
         #self.bordes_tablero(self.filas,self.columnas);
         #Volcamos la tabla en el array
         self.tablero = self.tabla.get_children();              
-        #Conexión a eventos
+        #Conexi�n a eventos
         self.interfaz.connect_signals(self);
         
     #Eventos    
@@ -69,14 +69,24 @@ class Practica:
         coordenadas = widget.get_name();
         print coordenadas;
         #Hacemos split para poder acceder a fila y columna
-        coordenadas_separadas = coordenadas.split(".");   
-        self.modificar_posicion(int(coordenadas_separadas[0]), int(coordenadas_separadas[1]));
+        coordenadas_separadas = coordenadas.split(".");  
+        #Columna central 
+        self.modificar_posicion5(int(coordenadas_separadas[0]), int(coordenadas_separadas[1]),0);
+        #Columna izquierda grande
+        self.modificar_posicion5(int(coordenadas_separadas[0]), int(coordenadas_separadas[1]),self.columna);
+        #Columna derecha grande
+        self.modificar_posicion5(int(coordenadas_separadas[0]), int(coordenadas_separadas[1]),-self.columna);
+        #Columna izquierda pequeña
+        self.modificar_posicion3(int(coordenadas_separadas[0]), int(coordenadas_separadas[1]),self.columna*2);
+        #Columna derecha pequeña
+        self.modificar_posicion3(int(coordenadas_separadas[0]), int(coordenadas_separadas[1]),-self.columna*2);
+       
     
     #Tablero de juego
     def crear_tablero(self,filas,columnas):
         for i in range(2,self.filas-2):
             for j in range(2,self.columnas-2):
-                #Creamos imágenes y las añadimos al tablero
+                #Creamos im�genes y las a�adimos al tablero
                 self.img_desactivado = gtk.Image();
                 self.img_desactivado.set_from_file(self.ruta_desactivado);
                 #Estado
@@ -91,66 +101,9 @@ class Practica:
                 self.event_box.connect('button-press-event',self.golpeo);
                 self.event_box.show();
                 self.tabla.attach(self.event_box,i,i+1,j,j+1);
-    #Método que genera la cruz de 'x' en el tablero en función de la posición pasada como parámetro
-    '''def bordes_tablero(self,filas, columnas):
-        #Borde de la tabla
-        #Borde superior
-        for j in range (2,columnas-2):
-            for i in range (2):
-                self.img_borde = gtk.Image();
-                self.img_borde.set_from_file(self.ruta_borde);
-                self.img_borde.show();
-                #EventBox sirve para poder controlar los eventos de click en la imagen
-                self.event_box = gtk.EventBox();                
-                #Indice de los eventbox              
-                self.name = str(i)+"."+str(j);
-                self.event_box.set_name(self.name);
-                self.event_box.add(self.img_borde);
-                self.event_box.show();
-                self.tabla.attach(self.event_box,j,j+1,i,i+1);
-        #Borde izquierdo
-        for j in range (0,columnas):
-            for i in range (2):
-                self.img_borde = gtk.Image();
-                self.img_borde.set_from_file(self.ruta_borde);
-                self.img_borde.show();
-                #EventBox sirve para poder controlar los eventos de click en la imagen
-                self.event_box = gtk.EventBox();                
-                #Indice de los eventbox              
-                self.name = str(i)+"."+str(j);
-                self.event_box.set_name(self.name);
-                self.event_box.add(self.img_borde);
-                self.event_box.show();
-                self.tabla.attach(self.event_box,i,i+1,j,j+1);
-        #Borde derecho
-        for j in range (0,columnas):
-            for i in range (filas-2,filas):
-                self.img_borde = gtk.Image();
-                self.img_borde.set_from_file(self.ruta_borde);
-                self.img_borde.show();
-                #EventBox sirve para poder controlar los eventos de click en la imagen
-                self.event_box = gtk.EventBox();                
-                #Indice de los eventbox              
-                self.name = str(i)+"."+str(j);
-                self.event_box.set_name(self.name);
-                self.event_box.add(self.img_borde);
-                self.event_box.show();
-                self.tabla.attach(self.event_box,i,i+1,j,j+1);
-        #Borde inferior
-        for j in range (2,columnas-2):
-            for i in range (filas-2,filas):
-                self.img_borde = gtk.Image();
-                self.img_borde.set_from_file(self.ruta_borde);
-                self.img_borde.show();
-                #EventBox sirve para poder controlar los eventos de click en la imagen
-                self.event_box = gtk.EventBox();                
-                #Indice de los eventbox              
-                self.name = str(i)+"."+str(j);
-                self.event_box.set_name(self.name);
-                self.event_box.add(self.img_borde);
-                self.event_box.show();
-                self.tabla.attach(self.event_box,j,j+1,i,i+1); '''
     
+    
+    #Metodo que a partir de las coordenadas del tablero te indica en que posicon de la lista se encuentra
     def posicion_tablero(self,fila,columna):
         elemento = str(fila) + "." + str(columna)
         for i in range(0,len(self.tablero)):
@@ -158,30 +111,45 @@ class Practica:
                 return i
             
     
-    #Método que genera la cruz de 'x' en el tablero en función de la posición pasada como parámetro
-    def modificar_posicion(self,fila,columna):
-        self.comprobar_posicion(fila, columna,self.posicion_tablero(fila, columna));
-        if (self.metodo_prueba(fila, columna, 1)< self.columnas-4 and self.metodo_prueba(fila, columna, 1) > 0 ):
-            self.comprobar_posicion(fila, columna,self.posicion_tablero(fila, columna)+1);
-        if (self.metodo_prueba(fila, columna, -1)< self.columnas-4 and self.metodo_prueba(fila, columna, -1) > 0 ):
-            self.comprobar_posicion(fila, columna,self.posicion_tablero(fila, columna)-1);
-        if (self.posicion_tablero(fila, columna) + self.fila < 100):
-            self.comprobar_posicion(fila, columna,self.posicion_tablero(fila, columna)+self.fila);
-        if (self.posicion_tablero(fila, columna)- self.fila > 0 ):
-            print self.posicion_tablero(fila, columna)+self.fila
-            self.comprobar_posicion(fila, columna,self.posicion_tablero(fila, columna)-self.fila);
+    #Metodo que a partir de una posicion de tablero camba esa posicion y las dos inferiores y superiores a ella
+    def modificar_posicion5(self,fila,columna,posicion):
+        a = self.posicion_tablero(fila, columna)+ posicion;
+        if (a<self.fila*self.columna and a>= 0):
+            self.comprobar_posicion(fila, columna,a);
+            if (self.metodo_prueba(fila, columna, 1)< self.columnas-4 and self.metodo_prueba(fila, columna, 1) >= 0 ):
+                self.comprobar_posicion(fila, columna,a+1);
+            if (self.metodo_prueba(fila, columna, -1)< self.columnas-4 and self.metodo_prueba(fila, columna, -1) >= 0 ):
+                self.comprobar_posicion(fila, columna,a-1);
+            if (self.metodo_prueba(fila, columna, 2)< self.columnas-4 and self.metodo_prueba(fila, columna, 2) >= 0 ):
+                self.comprobar_posicion(fila, columna,a+2);
+            if (self.metodo_prueba(fila, columna, -2)< self.columnas-4 and self.metodo_prueba(fila, columna, -2) >= 0 ):
+                self.comprobar_posicion(fila, columna,a-2);
+        
+        print self.posicion_tablero(fila, columna)
+        
+    #Metodo que a parir de una posicion de tablero cmbia esa posicion y la inferior y superior
+    def modificar_posicion3(self,fila,columna,posicion):
+        a = self.posicion_tablero(fila, columna)+ posicion;
+        if (a<self.fila*self.columna and a>= 0):
+            self.comprobar_posicion(fila, columna,a);
+            if (self.metodo_prueba(fila, columna, 1)< self.columnas-4 and self.metodo_prueba(fila, columna, 1) >= 0 ):
+                self.comprobar_posicion(fila, columna,a+1);
+            if (self.metodo_prueba(fila, columna, -1)< self.columnas-4 and self.metodo_prueba(fila, columna, -1) >= 0 ):
+                self.comprobar_posicion(fila, columna,a-1);
+            
+        
         print self.posicion_tablero(fila, columna)
     
     
-    #Método que modificará la posición pasada como parámetro, en el tablero indicado
+    #Metodo que reduce la casilla del array a un numero menor que el de sus filas para poder comprobarlo depues
     
     def metodo_prueba(self,fila,columna,variable):
         a = self.posicion_tablero(fila, columna)
-        while (a >= self.fila):
-            a = a - self.fila
+        while (a >= self.columna):
+            a = a - self.columna
         print a+variable
         return a+variable
-    
+    #M�todo que genera la cruz de 'x' en el tablero en funci�n de la posici�n pasada como par�metro
     def comprobar_posicion(self,fila,columna,bandera):
         imagen_actual = self.tablero[bandera].get_child(); 
         estado_imagen = self.tablero[bandera].get_child().get_name();
@@ -192,7 +160,7 @@ class Practica:
             imagen_actual.set_from_file(self.ruta_desactivado);
             imagen_actual.set_name("desactivado");  
              
-    #Método que inicia la matriz de juego(tablero) con puntos
+    #M�todo que inicia la matriz de juego(tablero) con puntos
     def iniciar_tablero(self,tablero):
         for i in range(self.filas):
             tablero.append([]);   

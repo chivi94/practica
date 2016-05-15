@@ -5,11 +5,13 @@ Created on 4 de may. de 2016
          Ivan Gonzalez Rincon
 '''
 import gtk
+import random
 
 class Practica:
     
-    def __init__(self,filas, columnas,ruta_desactivado,ruta_activado,ruta_boton,ruta_borde):
+    def __init__(self,filas, columnas,ruta_desactivado,ruta_activado,ruta_boton,ruta_borde,nivel):
         #Atributos de la clase
+        self.nivel = nivel;
         self.ruta_boton = ruta_boton;
         self.ruta_desactivado = ruta_desactivado;
         self.ruta_activado = ruta_activado;
@@ -40,10 +42,10 @@ class Practica:
         self.ventana.resize(200,200);
         #Acceso al boton de retroceso
         self.btn_deshacer = self.interfaz.get_object("bttn_deshacer");
-        '''self.image_refresh = gtk.Image();
+        self.image_refresh = gtk.Image();
         self.image_refresh.set_from_file(self.ruta_boton);        
-        self.btn_deshacer.set_image(self.image_refresh);'''
-        self.btn_deshacer.set_label("Deshacer jugada");
+        self.btn_deshacer.set_image(self.image_refresh);
+        
         self.btn_deshacer.connect("clicked",self.deshacer_jugada);
         #Acceso a la etiqueta que muestra los puntuacion actuales
         self.lbl_toques = self.interfaz.get_object("lbl_toques");
@@ -58,12 +60,13 @@ class Practica:
         self.tablero = [];
         #Tablero de juego
         self.crear_tablero(self.filas,self.columnas);
-        #Bordes del tablero
-        #self.bordes_tablero(self.filas,self.columnas);
         #Volcamos la tabla en el array
-        self.tablero = self.tabla.get_children();              
-        #Conexi�n a eventos
+        self.tablero = self.tabla.get_children();
+        #Iniciamos el nivel
+        self.crear_nivel();
+        #Conexion a eventos
         self.interfaz.connect_signals(self);
+        
         
     #Eventos    
     #Evento de cierre de ventana  
@@ -95,6 +98,15 @@ class Practica:
         self.modificar_posicion3(fila, columna,posicion*2);
         #Columna derecha pequeña
         self.modificar_posicion3(fila, columna,-posicion*2);
+        
+    def crear_nivel(self):
+        nivel = self.nivel
+        while(nivel > 0):
+            a = random.randint(2,self.fila+1)
+            b = random.randint(2,self.columna+1)
+            self.realizar_golpe(a,b, self.columna);
+            nivel = nivel-1;
+    
     #Tablero de juego
     def crear_tablero(self,filas,columnas):
         for i in range(2,self.filas-2):
@@ -196,9 +208,9 @@ class Practica:
             if response == gtk.RESPONSE_OK:
                 dialog.destroy();
 if __name__ == '__main__':
-    ruta_boton = "iconos\refresh.png";
-    ruta_desactivado = "iconos\desactivado.png";
-    ruta_activado = "iconos\activado.png";
+    ruta_boton = "/home/toso/Escritorio/Clase/Programación/Eclipse Workspace/Practica Glade/iconos/refresh.png";
+    ruta_desactivado = "/home/toso/Escritorio/Clase/Programación/Eclipse Workspace/Practica Glade/iconos/desactivado.png";
+    ruta_activado = "/home/toso/Escritorio/Clase/Programación/Eclipse Workspace/Practica Glade/iconos/activado.png";
     ruta_borde = "iconos\borde.png";
-    practica = Practica(5,5,ruta_desactivado,ruta_activado,ruta_boton,ruta_borde);
+    practica = Practica(10,10,ruta_desactivado,ruta_activado,ruta_boton,ruta_borde,2);
     gtk.main();

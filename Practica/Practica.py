@@ -101,6 +101,14 @@ class Practica:
     def on_img_menu_reiniciar_activate(self,widget, data = None):
         self.iniciar_nivel(self.nivel,1);
     
+    #Metodo que reinicia el nivel actual
+    def on_img_menu_salir_activate(self,widget, data = None):
+        gtk.main_quit();
+        
+    #Metodo que reinicia el nivel actual
+    def on_img_menu_puntuaciones_activate(self,widget, data = None):
+        print "Puntuaciones";
+
     def on_img_menu_info_activate(self,widget,data = None):
         self.crear_dialogo("El objetivo del juego consiste en limpiar el tablero de digletts,\n"
         +"de forma que estén todos escondidos");

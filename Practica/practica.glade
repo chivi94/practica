@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.16.1 -->
 <interface>
   <requires lib="gtk+" version="2.24"/>
+  <!-- interface-naming-policy toplevel-contextual -->
   <object class="GtkDialog" id="dlg_nivel">
     <property name="can_focus">False</property>
     <property name="type_hint">dialog</property>
     <signal name="delete-event" handler="on_dlg_nivel_delete_event" swapped="no"/>
     <child internal-child="vbox">
-      <object class="GtkBox" id="dialog-vbox1">
+      <object class="GtkVBox" id="dialog-vbox1">
         <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
         <property name="spacing">2</property>
         <child internal-child="action_area">
-          <object class="GtkButtonBox" id="dialog-action_area1">
+          <object class="GtkHButtonBox" id="dialog-action_area1">
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
             <child>
               <object class="GtkButton" id="bttn_ok">
                 <property name="label" translatable="yes">Ok</property>
+                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -31,6 +31,7 @@
             <child>
               <object class="GtkButton" id="bttn_cancel">
                 <property name="label" translatable="yes">Cancelar</property>
+                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
@@ -65,6 +66,10 @@
           <object class="GtkEntry" id="txtbox_nivel">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
+            <property name="primary_icon_activatable">False</property>
+            <property name="secondary_icon_activatable">False</property>
+            <property name="primary_icon_sensitive">True</property>
+            <property name="secondary_icon_sensitive">True</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -74,6 +79,10 @@
         </child>
       </object>
     </child>
+    <action-widgets>
+      <action-widget response="0">bttn_ok</action-widget>
+      <action-widget response="0">bttn_cancel</action-widget>
+    </action-widgets>
   </object>
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
@@ -89,6 +98,11 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="stock">gtk-info</property>
+  </object>
+  <object class="GtkImage" id="image4">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="stock">gtk-properties</property>
   </object>
   <object class="GtkWindow" id="wd_ventana">
     <property name="can_focus">False</property>
@@ -143,6 +157,7 @@
                         <property name="can_focus">False</property>
                         <property name="image">image4</property>
                         <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_img_menu_puntuaciones_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -160,6 +175,7 @@
                         <property name="can_focus">False</property>
                         <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
+                        <signal name="activate" handler="on_img_menu_salir_activate" swapped="no"/>
                       </object>
                     </child>
                   </object>
@@ -281,10 +297,5 @@
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkImage" id="image4">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="stock">gtk-properties</property>
   </object>
 </interface>

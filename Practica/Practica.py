@@ -5,15 +5,16 @@ Created on 4 de may. de 2016
          Ivan Gonzalez Rincon
 '''
 import gtk
+import random
 
 class Practica:
     
-    def __init__(self,filas, columnas,ruta_desactivado,ruta_activado,ruta_boton,ruta_borde):
+    def __init__(self,filas, columnas,ruta_desactivado,ruta_activado,ruta_boton,nivel):
         #Atributos de la clase
+        self.nivel = nivel;
         self.ruta_boton = ruta_boton;
         self.ruta_desactivado = ruta_desactivado;
         self.ruta_activado = ruta_activado;
-        self.ruta_borde = ruta_borde;
         self.filas = filas+4;
         self.columnas = columnas+4;
         self.fila = filas;
@@ -38,12 +39,19 @@ class Practica:
         #Ventana
         self.ventana = self.interfaz.get_object("wd_ventana");
         self.ventana.resize(200,200);
+        #Dialogo
+        self.dlg_nivel = self.interfaz.get_object("dlg_nivel");
+        self.txt_box_nivel = self.interfaz.get_object("txtbox_nivel");
+        self.bttn_ok = self.interfaz.get_object("bttn_ok");
+        self.bttn_ok.connect("clicked",self.on_dlg_bttn_clicked);
+        self.bttn_cancel = self.interfaz.get_object("bttn_cancel");
+        self.bttn_cancel.connect("clicked",self.on_dlg_bttn_clicked);
         #Acceso al boton de retroceso
         self.btn_deshacer = self.interfaz.get_object("bttn_deshacer");
-        '''self.image_refresh = gtk.Image();
+        self.image_refresh = gtk.Image();
         self.image_refresh.set_from_file(self.ruta_boton);        
-        self.btn_deshacer.set_image(self.image_refresh);'''
-        self.btn_deshacer.set_label("Deshacer jugada");
+        self.btn_deshacer.set_image(self.image_refresh);
+        
         self.btn_deshacer.connect("clicked",self.deshacer_jugada);
         #Acceso a la etiqueta que muestra los puntuacion actuales
         self.lbl_toques = self.interfaz.get_object("lbl_toques");
@@ -56,20 +64,52 @@ class Practica:
         self.tabla.show();
         
         self.tablero = [];
-        #Tablero de juego
+        '''#Tablero de juego
         self.crear_tablero(self.filas,self.columnas);
-        #Bordes del tablero
-        #self.bordes_tablero(self.filas,self.columnas);
         #Volcamos la tabla en el array
-        self.tablero = self.tabla.get_children();              
-        #Conexi�n a eventos
+        self.tablero = self.tabla.get_children();'''
+       
+        #Conexion a eventos
         self.interfaz.connect_signals(self);
+        #Iniciamos el nivel
+        #self.crear_nivel(self.nivel);
+        self.dlg_nivel.run();
+        
         
     #Eventos    
     #Evento de cierre de ventana  
     def on_ventana_delete_event(self,widget,data = None):
         gtk.main_quit();
-        
+    
+    #Evento que controla el cierre del dialogo de peticion de nivel
+    def on_dlg_nivel_delete_event(self,widget,data = None):
+        self.dlg_nivel.hide();       
+      
+    def on_dlg_bttn_clicked(self,widget,data = None):
+        texto_boton=widget.get_label();
+        if texto_boton == "Ok":
+            print "Boton OK"
+            nivel = self.txt_box_nivel.get_text();
+            if nivel != "" and int(nivel)> 0:
+                self.crear_tablero(self.filas, self.columnas);
+                self.tablero = self.tabla.get_children();
+                self.crear_nivel(int(nivel));
+                self.txt_box_nivel.set_text("");
+                self.dlg_nivel.hide();
+                if self.ventana.get_visible() == False:
+                    self.ventana.show();
+            else:
+                self.crear_dialogo("Introduzca nivel válido");
+        elif texto_boton == "Cancelar":
+            self.txt_box_nivel.set_text("");
+            self.dlg_nivel.hide();
+                  
+    def on_img_menu_nuevo_activate(self,widget,data = None):
+        self.dlg_nivel.run();
+    
+    def on_img_menu_info_activate(self,widget,data = None):
+        self.crear_dialogo("El objetivo del juego consiste en limpiar el tablero de digletts,\n"
+        +"de forma que estén todos escondidos");
     #Evento de click en imagen de tablero
     def golpeo(self,widget,data = None):
         #Coordenadas del elemento sobre el que se ha hecho click
@@ -95,6 +135,19 @@ class Practica:
         self.modificar_posicion3(fila, columna,posicion*2);
         #Columna derecha pequeña
         self.modificar_posicion3(fila, columna,-posicion*2);
+        
+    def crear_nivel(self,nivel):
+        while(nivel > 0):
+            a = random.randint(2,self.fila+1)
+            b = random.randint(2,self.columna+1)
+            self.realizar_golpe(a,b, self.columna);
+            nivel = nivel-1;
+    
+    def crear_dialogo(self,texto):
+        dialog = gtk.MessageDialog(self.ventana,0,gtk.MESSAGE_INFO,gtk.BUTTONS_OK,texto);
+        response = dialog.run();  
+        if response == gtk.RESPONSE_OK:
+            dialog.destroy();
     #Tablero de juego
     def crear_tablero(self,filas,columnas):
         for i in range(2,self.filas-2):
@@ -191,14 +244,11 @@ class Practica:
             self.historial.remove(peticion)
             self.ronda -=1
         else:
-            dialog = gtk.MessageDialog(self.ventana,0,gtk.MESSAGE_INFO,gtk.BUTTONS_OK,"No se puede deshacer la jugada actual");
-            response = dialog.run();  
-            if response == gtk.RESPONSE_OK:
-                dialog.destroy();
+            self.crear_dialogo("No se puede deshacer la jugada actual");
+            
 if __name__ == '__main__':
-    ruta_boton = "iconos\refresh.png";
-    ruta_desactivado = "iconos\desactivado.png";
-    ruta_activado = "iconos\activado.png";
-    ruta_borde = "iconos\borde.png";
-    practica = Practica(5,5,ruta_desactivado,ruta_activado,ruta_boton,ruta_borde);
+    ruta_boton = "/home/toso/Escritorio/Clase/Programación/Eclipse Workspace/Practica Glade/iconos/refresh.png";
+    ruta_desactivado = "/home/toso/Escritorio/Clase/Programación/Eclipse Workspace/Practica Glade/iconos/desactivado.png";
+    ruta_activado = "/home/toso/Escritorio/Clase/Programación/Eclipse Workspace/Practica Glade/iconos/activado.png";
+    practica = Practica(10,10,ruta_desactivado,ruta_activado,ruta_boton,2);
     gtk.main();

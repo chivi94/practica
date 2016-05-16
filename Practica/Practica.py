@@ -9,9 +9,9 @@ import random
 
 class Practica:
     
-    def __init__(self,filas, columnas,ruta_desactivado,ruta_activado,ruta_boton,nivel):
+    def __init__(self,filas, columnas,ruta_desactivado,ruta_activado,ruta_boton):
         #Atributos de la clase
-        self.nivel = nivel;
+        self.nivel = 0;
         self.ruta_boton = ruta_boton;
         self.ruta_desactivado = ruta_desactivado;
         self.ruta_activado = ruta_activado;
@@ -20,6 +20,8 @@ class Practica:
         self.fila = filas;
         self.columna = columnas;
         self.historial = [];
+        self.tablero = [];
+        self.tablero_inicial=[]; 
         self.puntuacion = 0;#Contador de puntuacion realizados
         self.ronda = 0#Contador de la ronda actual
         #Interfaz
@@ -61,18 +63,8 @@ class Practica:
         self.tabla = self.interfaz.get_object("tbl_tablero");
         self.tabla.resize(self.filas, self.columnas);
         self.tabla.set_homogeneous(True);
-        self.tabla.show();
-        
-        self.tablero = [];
-        '''#Tablero de juego
-        self.crear_tablero(self.filas,self.columnas);
-        #Volcamos la tabla en el array
-        self.tablero = self.tabla.get_children();'''
-       
-        #Conexion a eventos
-        self.interfaz.connect_signals(self);
-        #Iniciamos el nivel
-        #self.crear_nivel(self.nivel);
+        self.tabla.show();   
+        #Iniciamos el dialogo de peticion de nivel
         self.dlg_nivel.run();
         
         
@@ -91,10 +83,7 @@ class Practica:
             print "Boton OK"
             nivel = self.txt_box_nivel.get_text();
             if nivel != "" and int(nivel)> 0:
-                self.crear_tablero(self.filas, self.columnas);
-                self.tablero = self.tabla.get_children();
-                self.crear_nivel(int(nivel));
-                self.txt_box_nivel.set_text("");
+                self.iniciar_nivel(nivel,0);
                 self.dlg_nivel.hide();
                 if self.ventana.get_visible() == False:
                     self.ventana.show();
@@ -103,13 +92,19 @@ class Practica:
         elif texto_boton == "Cancelar":
             self.txt_box_nivel.set_text("");
             self.dlg_nivel.hide();
-                  
+    
+    #Metodo que inicia un dialogo para pedir un nuevo nivel              
     def on_img_menu_nuevo_activate(self,widget,data = None):
+        self.txt_box_nivel.has_focus();
         self.dlg_nivel.run();
+    #Metodo que reinicia el nivel actual
+    def on_img_menu_reiniciar_activate(self,widget, data = None):
+        self.iniciar_nivel(self.nivel,1);
     
     def on_img_menu_info_activate(self,widget,data = None):
         self.crear_dialogo("El objetivo del juego consiste en limpiar el tablero de digletts,\n"
         +"de forma que estén todos escondidos");
+        
     #Evento de click en imagen de tablero
     def golpeo(self,widget,data = None):
         #Coordenadas del elemento sobre el que se ha hecho click
@@ -123,7 +118,24 @@ class Practica:
         self.puntuacion +=1; 
         self.ronda +=1;     
         self.lbl_toques.set_text("Toques realizados:\n"+str(self.puntuacion));
-        
+        self.tablero_completado();
+    
+    #Metodo que comprobara si se ha completado el tablero
+    def tablero_completado(self):
+        contador = 0
+        for i in range(self.fila*self.columna):
+            estado_imagen = self.tablero[i].get_child().get_name();
+            print estado_imagen;
+            if estado_imagen == "activado":
+                contador+=1;
+        #Si todo el tablero esta desactivado, el programa termina
+        if contador == 0:
+            self.crear_dialogo("Enhorabuena, has completado el nivel");
+            return False
+        #En caso contrario, continua
+        else:
+            return True
+       
     def realizar_golpe(self,fila,columna,posicion):
         #Columna central 
         self.modificar_posicion5(fila, columna,0);
@@ -135,13 +147,44 @@ class Practica:
         self.modificar_posicion3(fila, columna,posicion*2);
         #Columna derecha pequeña
         self.modificar_posicion3(fila, columna,-posicion*2);
-        
+     
+    def iniciar_nivel(self,nivel,flag):
+        #Si se pasa un 0, se esta haciendo un nivel nuevo
+        if flag == 0:
+            self.ronda = 0;
+            self.nivel = int(nivel);
+            self.crear_tablero(self.filas, self.columnas);
+            self.tablero = self.tabla.get_children();
+            self.crear_nivel(int(nivel));
+            self.txt_box_nivel.set_text("");
+            self.puntuacion = 0;
+            self.lbl_toques.set_text("Toques realizados:\n"+str(self.puntuacion));
+            self.historial = [];
+        #Si se pasa un 1, se esta reiniciando un nivel
+        elif flag ==1:
+            self.ronda = 0;
+            self.nivel = int(nivel);
+            self.crear_tablero(self.filas, self.columnas);
+            self.tablero = self.tabla.get_children();
+            for elemento in self.tablero_inicial:
+                posicion = elemento.split(".");
+                self.realizar_golpe(posicion[0],posicion[1], self.columna);
+            self.txt_box_nivel.set_text("");
+            self.puntuacion = 0;
+            self.lbl_toques.set_text("Toques realizados:\n"+str(self.puntuacion));
+            self.historial = [];
+            
     def crear_nivel(self,nivel):
+        posicion = 0;
+        self.tablero_inicial=[];
         while(nivel > 0):
             a = random.randint(2,self.fila+1)
             b = random.randint(2,self.columna+1)
+            self.tablero_inicial.insert(posicion, str(a)+"."+str(b));
             self.realizar_golpe(a,b, self.columna);
+            posicion +=1;
             nivel = nivel-1;
+            
     
     def crear_dialogo(self,texto):
         dialog = gtk.MessageDialog(self.ventana,0,gtk.MESSAGE_INFO,gtk.BUTTONS_OK,texto);
@@ -247,8 +290,8 @@ class Practica:
             self.crear_dialogo("No se puede deshacer la jugada actual");
             
 if __name__ == '__main__':
-    ruta_boton = "/home/toso/Escritorio/Clase/Programación/Eclipse Workspace/Practica Glade/iconos/refresh.png";
-    ruta_desactivado = "/home/toso/Escritorio/Clase/Programación/Eclipse Workspace/Practica Glade/iconos/desactivado.png";
-    ruta_activado = "/home/toso/Escritorio/Clase/Programación/Eclipse Workspace/Practica Glade/iconos/activado.png";
-    practica = Practica(10,10,ruta_desactivado,ruta_activado,ruta_boton,2);
+    ruta_boton = ".//iconos//refresh.png";
+    ruta_desactivado = ".//iconos//desactivado.png";
+    ruta_activado = ".//iconos//activado.png";
+    practica = Practica(10,10,ruta_desactivado,ruta_activado,ruta_boton);
     gtk.main();

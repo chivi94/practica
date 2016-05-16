@@ -126,13 +126,13 @@
                     </child>
                     <child>
                       <object class="GtkImageMenuItem" id="img_menu_reiniciar">
-                        <property name="label">Reiniciar nivel
-</property>
+                        <property name="label">Reiniciar nivel</property>
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="image">image2</property>
                         <property name="use_stock">False</property>
+                        <signal name="activate" handler="on_img_menu_reiniciar_activate" swapped="no"/>
                       </object>
                     </child>
                     <child>
@@ -179,7 +179,7 @@
                     <property name="can_focus">False</property>
                     <child>
                       <object class="GtkImageMenuItem" id="img_menu_info">
-                        <property name="label">Información</property>
+                        <property name="label">Informacion</property>
                         <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>

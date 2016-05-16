@@ -92,6 +92,8 @@ class Practica:
         elif texto_boton == "Cancelar":
             self.txt_box_nivel.set_text("");
             self.dlg_nivel.hide();
+            if self.ventana.get_visible() == False:
+                gtk.main_quit();
     
     #Metodo que inicia un dialogo para pedir un nuevo nivel              
     def on_img_menu_nuevo_activate(self,widget,data = None):
@@ -139,6 +141,8 @@ class Practica:
         #Si todo el tablero esta desactivado, el programa termina
         if contador == 0:
             self.crear_dialogo("Enhorabuena, has completado el nivel");
+            self.ventana.hide();
+            self.dlg_nivel.run();
             return False
         #En caso contrario, continua
         else:

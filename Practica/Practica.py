@@ -54,9 +54,11 @@ class Practica:
         self.bttn_cancel.connect("clicked",self.on_dlg_lvl_bttn_clicked);
         #Dialogo de puntuaciones
         self.dlg_puntuaciones = self.interfaz.get_object("dlg_puntuaciones");
+        self.dlg_puntuaciones.set_size_request(100,100);
         self.lbl_puntuaciones_fichero = self.interfaz.get_object("lbl_puntuaciones_fichero");
         #Acceso al boton de retroceso
         self.btn_deshacer = self.interfaz.get_object("bttn_deshacer");
+        self.btn_deshacer.set_size_request(64,64);
         self.image_refresh = gtk.Image();
         self.image_refresh.set_from_file(self.ruta_boton);        
         self.btn_deshacer.set_image(self.image_refresh);      

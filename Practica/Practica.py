@@ -45,17 +45,15 @@ class Practica:
         #Ventana
         self.ventana = self.interfaz.get_object("wd_ventana");
         self.ventana.resize(200,200);
+        self.ventana.set_title("Diglett Mole");
         #Dialogo de peticion de nivel
         self.dlg_nivel = self.interfaz.get_object("dlg_nivel");
+        self.dlg_nivel.set_title("Seleccione nivel");
         self.txt_box_nivel = self.interfaz.get_object("txtbox_nivel");
         self.bttn_ok = self.interfaz.get_object("bttn_ok");
         self.bttn_ok.connect("clicked",self.on_dlg_lvl_bttn_clicked);
         self.bttn_cancel = self.interfaz.get_object("bttn_cancel");
         self.bttn_cancel.connect("clicked",self.on_dlg_lvl_bttn_clicked);
-        #Dialogo de puntuaciones
-        self.dlg_puntuaciones = self.interfaz.get_object("dlg_puntuaciones");
-        self.dlg_puntuaciones.set_size_request(100,100);
-        self.lbl_puntuaciones_fichero = self.interfaz.get_object("lbl_puntuaciones_fichero");
         #Acceso al boton de retroceso
         self.btn_deshacer = self.interfaz.get_object("bttn_deshacer");
         self.btn_deshacer.set_size_request(64,64);
@@ -75,22 +73,36 @@ class Practica:
         self.tabla.show();   
         #Iniciamos el dialogo de peticion de nivel
         self.dlg_nivel.run();   
-   
+    
+    #Método que crea de forma dinámica el diálogo donde se mostrarán las puntuaciones.
+    def crea_dlg_punt(self):
+        #Dialogo de puntuaciones
+        self.dlg_puntuaciones = gtk.Dialog();
+        self.dlg_puntuaciones.connect("destroy",self.on_dlg_puntuaciones_delete_event);
+        self.dlg_puntuaciones.set_title("Puntuaciones almacenadas");
+        self.dlg_puntuaciones.set_border_width(0);
+        self.dlg_puntuaciones.set_size_request(300, 300);
+        self.scrolled_window = gtk.ScrolledWindow();
+        self.scrolled_window.set_border_width(10);
+        self.scrolled_window.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_ALWAYS);
+        self.dlg_puntuaciones.vbox.pack_start(self.scrolled_window, gtk.TRUE, gtk.TRUE, 0);
+        self.lbl_puntuaciones_fichero = gtk.Label();
+        self.scrolled_window.add_with_viewport(self.lbl_puntuaciones_fichero);
+        self.lbl_puntuaciones_fichero.show();
+        self.scrolled_window.show();
+        #Leemos las puntuaciones
+        self.leer_puntuaciones(self.ruta_fichero,self.lbl_puntuaciones_fichero,0);
+        
     #Eventos    
     #Evento de cierre de ventana  
-    
     def on_ventana_delete_event(self,widget,data = None):
         gtk.main_quit();
     
     #Evento que controla el cierre del dialogo de peticion de nivel    
     def on_dlg_nivel_delete_event(self,widget,data = None):
-        self.dlg_nivel.hide();       
-    
+        self.dlg_nivel.hide();    
     def on_dlg_puntuaciones_delete_event(self,widget,data = None):
-        self.dlg_puntuaciones.hide();
-    
-    def on_dlg_punt_bttn_clicked(self,widget,data = None):
-        self.dlg_puntuaciones.hide();
+        self.dlg_puntuaciones.destroy();
      
     def on_dlg_lvl_bttn_clicked(self,widget,data = None):
         try:
@@ -124,10 +136,11 @@ class Practica:
         gtk.main_quit();
         
     #Metodo que reinicia el nivel actual
-    def on_img_menu_puntuaciones_activate(self,widget, data = None):
-        self.leer_puntuaciones(self.ruta_fichero,self.lbl_puntuaciones_fichero,0);
-        self.dlg_puntuaciones.run();
-
+    def on_img_menu_puntuaciones_activate(self,widget, data = None):        
+        self.crea_dlg_punt();      
+        self.dlg_puntuaciones.show();     
+        
+        
     def on_img_menu_info_activate(self,widget,data = None):
         self.crear_dialogo("El objetivo del juego consiste en limpiar el tablero de digletts,\n"
         +"de forma que estén todos escondidos");

@@ -115,14 +115,14 @@ class Practica:
                     if self.ventana.get_visible() == False:
                         self.ventana.show();
                 else:
-                    self.crear_dialogo("Introduzca nivel válido");
+                    self.crear_dialogo("Introduzca nivel válido",gtk.MESSAGE_ERROR);
             elif texto_boton == "Cancelar":
                 self.txt_box_nivel.set_text("");
                 self.dlg_nivel.hide();
                 if self.ventana.get_visible() == False:
                     gtk.main_quit();
         except ValueError:
-            self.crear_dialogo("Entrada no válida");
+            self.crear_dialogo("Entrada no válida",gtk.MESSAGE_ERROR);
     #Metodo que inicia un dialogo para pedir un nuevo nivel              
     def on_img_menu_nuevo_activate(self,widget,data = None):
         self.txt_box_nivel.has_focus();
@@ -143,7 +143,7 @@ class Practica:
         
     def on_img_menu_info_activate(self,widget,data = None):
         self.crear_dialogo("El objetivo del juego consiste en limpiar el tablero de digletts,\n"
-        +"de forma que estén todos escondidos");
+        +"de forma que estén todos escondidos",gtk.MESSAGE_INFO);
         
     #Evento de click en imagen de tablero
     def golpeo(self,widget,data = None):
@@ -159,7 +159,7 @@ class Practica:
         self.lbl_toques.set_text("Toques realizados:\n"+str(self.puntuacion));
         completado=self.tablero_completado();
         if completado:
-            self.crear_dialogo("!Tablero completado¡");
+            self.crear_dialogo("!Tablero completado¡",gtk.MESSAGE_INFO);
             try:
                 self.comprobar_puntuaciones(self.nivel, self.puntuacion, ruta_fichero);
             except IOError:
@@ -229,8 +229,8 @@ class Practica:
             nivel = nivel-1;
             
     
-    def crear_dialogo(self,texto):
-        dialog = gtk.MessageDialog(self.ventana,0,gtk.MESSAGE_INFO,gtk.BUTTONS_OK,texto);
+    def crear_dialogo(self,texto,icono):
+        dialog = gtk.MessageDialog(self.ventana,0,icono,gtk.BUTTONS_OK,texto);
         response = dialog.run();  
         if response == gtk.RESPONSE_OK:
             dialog.destroy();
@@ -330,7 +330,7 @@ class Practica:
             self.historial.remove(peticion)
             self.ronda -=1
         else:
-            self.crear_dialogo("No se puede deshacer la jugada actual");
+            self.crear_dialogo("No se puede deshacer la jugada actual",gtk.MESSAGE_ERROR);
             
     #Metodos relacionados con los ficheros
     #M�todo que lee el fichero y lo lee y modifica en funci�n de la puntuaci�n que haya obtenido el usuario
@@ -358,7 +358,7 @@ class Practica:
                         break;
             fichero.close();
         except IOError:
-            self.crear_dialogo("Aún no hay puntuaciones guardadas. Se crearán cuando se complete un nivel");
+            self.crear_dialogo("Aún no hay puntuaciones guardadas. Se crearán cuando se complete un nivel",gtk.MESSAGE_INFO);
             if label.get_name() == "lbl_max_punt":
                 label.set_text("Nivel actual:"+
                                     "\nPuntuación:");
@@ -375,7 +375,7 @@ class Practica:
                 nueva_puntuacion = str(nivel_guardado)+":"+str(puntuacion)
                 self.crear_dialogo("¡Puntuación mejorada!"+
                                    "\nPuntuación anterior:"+str(toques_nivel)+
-                                   "\nPuntuación actual"+str(puntuacion));
+                                   "\nPuntuación actual"+str(puntuacion),gtk.MESSAGE_INFO);
             else:
                 nueva_puntuacion = str(nivel_guardado)+":"+str(toques_nivel) 
             lineas.append(nueva_puntuacion)

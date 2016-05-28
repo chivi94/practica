@@ -9,6 +9,7 @@ import random
 
 class Practica:
     
+    #Constructor
     def __init__(self,filas, columnas,ruta_desactivado,ruta_activado,ruta_boton,ruta_fichero):
         #Atributos de la clase
         self.nivel = 0;
@@ -98,12 +99,13 @@ class Practica:
     def on_ventana_delete_event(self,widget,data = None):
         gtk.main_quit();
     
-    #Evento que controla el cierre del dialogo de peticion de nivel    
+    #Evento de cierre de diálogo de petición de nivel
     def on_dlg_nivel_delete_event(self,widget,data = None):
-        self.dlg_nivel.hide();    
+        self.dlg_nivel.hide();
+    #Evento de cierre de diálogo de puntuaciones        
     def on_dlg_puntuaciones_delete_event(self,widget,data = None):
         self.dlg_puntuaciones.destroy();
-     
+    #Evento que controla el click de los botones del diálogo de petición de nivel
     def on_dlg_lvl_bttn_clicked(self,widget,data = None):
         try:
             texto_boton=widget.get_label();
@@ -123,29 +125,29 @@ class Practica:
                     gtk.main_quit();
         except ValueError:
             self.crear_dialogo("Entrada no válida",gtk.MESSAGE_ERROR);
-    #Metodo que inicia un dialogo para pedir un nuevo nivel              
+    #Evento que controla el apartado de menú: Archivo -> Nuevo nivel             
     def on_img_menu_nuevo_activate(self,widget,data = None):
         self.txt_box_nivel.has_focus();
         self.dlg_nivel.run();
-    #Metodo que reinicia el nivel actual
+    #Evento que controla el apartado de menú: Archivo -> Reiniciar nivel
     def on_img_menu_reiniciar_activate(self,widget, data = None):
         self.iniciar_nivel(self.nivel,1);
+        
+    #Evento que controla el apartado de menú: Archivo -> Puntuaciones
+    def on_img_menu_puntuaciones_activate(self,widget, data = None):        
+        self.crea_dlg_punt();      
+        self.dlg_puntuaciones.show();
     
-    #Metodo que reinicia el nivel actual
+    #Evento que controla el apartado de menú: Archivo -> Salir 
     def on_img_menu_salir_activate(self,widget, data = None):
         gtk.main_quit();
         
-    #Metodo que reinicia el nivel actual
-    def on_img_menu_puntuaciones_activate(self,widget, data = None):        
-        self.crea_dlg_punt();      
-        self.dlg_puntuaciones.show();     
-        
-        
+    #Evento que controla el apartado de menú: Ayuda -> Información
     def on_img_menu_info_activate(self,widget,data = None):
         self.crear_dialogo("El objetivo del juego consiste en limpiar el tablero de digletts,\n"
         +"de forma que estén todos escondidos",gtk.MESSAGE_INFO);
         
-    #Evento de click en imagen de tablero
+    #Evento que controla el click sobre el tablero
     def golpeo(self,widget,data = None):
         #Coordenadas del elemento sobre el que se ha hecho click
         coordenadas = widget.get_name();
@@ -169,8 +171,21 @@ class Practica:
             finally:                
                 self.ventana.hide();
                 self.dlg_nivel.run();
+                
+    #Método que realiza un golpe sobre el tablero.
+    def realizar_golpe(self,fila,columna,posicion):
+        #Columna central 
+        self.modificar_posicion5(fila, columna,0);
+        #Columna izquierda grande
+        self.modificar_posicion5(fila, columna,posicion);
+        #Columna derecha grande
+        self.modificar_posicion5(fila, columna,-posicion);
+        #Columna izquierda pequeña
+        self.modificar_posicion3(fila, columna,posicion*2);
+        #Columna derecha pequeña
+        self.modificar_posicion3(fila, columna,-posicion*2);
     
-    #Metodo que comprobara si se ha completado el tablero
+    #Metodo que comprobará si se ha completado el tablero
     def tablero_completado(self):
         contador = 0
         for i in range(self.fila*self.columna):
@@ -185,18 +200,8 @@ class Practica:
         else:
             return False
        
-    def realizar_golpe(self,fila,columna,posicion):
-        #Columna central 
-        self.modificar_posicion5(fila, columna,0);
-        #Columna izquierda grande
-        self.modificar_posicion5(fila, columna,posicion);
-        #Columna derecha grande
-        self.modificar_posicion5(fila, columna,-posicion);
-        #Columna izquierda pequeña
-        self.modificar_posicion3(fila, columna,posicion*2);
-        #Columna derecha pequeña
-        self.modificar_posicion3(fila, columna,-posicion*2);
-     
+    
+    #Método que se encarga de iniciar el juego con el nivel pasado como argumento
     def iniciar_nivel(self,nivel,flag):
         self.ronda = 0;
         self.nivel = int(nivel);
@@ -217,6 +222,7 @@ class Practica:
         self.historial = [];
         #Mostramos en la etiqueta correspondiente la puntuación máxima de ese nivel
         self.leer_puntuaciones(self.ruta_fichero, self.lbl_punt_max, self.nivel);
+    #Método que modifica el tablero en función del nivel pasado como argumento
     def crear_nivel(self,nivel):
         posicion = 0;
         self.tablero_inicial=[];
@@ -228,13 +234,13 @@ class Practica:
             posicion +=1;
             nivel = nivel-1;
             
-    
+    #Método que crea un cuadro diálogo con la información pasada como argumentos
     def crear_dialogo(self,texto,icono):
         dialog = gtk.MessageDialog(self.ventana,0,icono,gtk.BUTTONS_OK,texto);
         response = dialog.run();  
         if response == gtk.RESPONSE_OK:
             dialog.destroy();
-    #Tablero de juego
+    #Método que crea el tablero de juego
     def crear_tablero(self,filas,columnas):
         for i in range(2,self.filas-2):
             for j in range(2,self.columnas-2):
@@ -254,7 +260,7 @@ class Practica:
                 self.event_box.show();
                 self.tabla.attach(self.event_box,i,i+1,j,j+1);
 
-    #Metodo que a partir de las coordenadas del tablero te indica en que posicon de la lista se encuentra
+    #Metodo que a partir de las coordenadas del tablero indica en que posición de la lista se encuentra
     def posicion_tablero(self,fila,columna):
         elemento = str(fila) + "." + str(columna)
         for i in range(0,len(self.tablero)):
@@ -262,45 +268,45 @@ class Practica:
                 return i
             
     
-    #Metodo que a partir de una posicion de tablero camba esa posicion y las dos inferiores y superiores a ella
+    #Método que a partir de una posición dada del tablero, cambia tanto esa posición como las dos inferiores y superiores a ella.
     def modificar_posicion5(self,fila,columna,posicion):
         a = self.posicion_tablero(fila, columna)+ posicion;
         if (a<self.fila*self.columna and a>= 0):
             self.comprobar_posicion(fila, columna,a);
-            if (self.metodo_prueba(fila, columna, 1)< self.columnas-4 and self.metodo_prueba(fila, columna, 1) >= 0 ):
+            if (self.reducir_casilla(fila, columna, 1)< self.columnas-4 and self.reducir_casilla(fila, columna, 1) >= 0 ):
                 self.comprobar_posicion(fila, columna,a+1);
-            if (self.metodo_prueba(fila, columna, -1)< self.columnas-4 and self.metodo_prueba(fila, columna, -1) >= 0 ):
+            if (self.reducir_casilla(fila, columna, -1)< self.columnas-4 and self.reducir_casilla(fila, columna, -1) >= 0 ):
                 self.comprobar_posicion(fila, columna,a-1);
-            if (self.metodo_prueba(fila, columna, 2)< self.columnas-4 and self.metodo_prueba(fila, columna, 2) >= 0 ):
+            if (self.reducir_casilla(fila, columna, 2)< self.columnas-4 and self.reducir_casilla(fila, columna, 2) >= 0 ):
                 self.comprobar_posicion(fila, columna,a+2);
-            if (self.metodo_prueba(fila, columna, -2)< self.columnas-4 and self.metodo_prueba(fila, columna, -2) >= 0 ):
+            if (self.reducir_casilla(fila, columna, -2)< self.columnas-4 and self.reducir_casilla(fila, columna, -2) >= 0 ):
                 self.comprobar_posicion(fila, columna,a-2);
         
         print self.posicion_tablero(fila, columna)
         
-    #Metodo que a parir de una posicion de tablero cmbia esa posicion y la inferior y superior
+    #Método que a partir de una posición dada, cambia tanto es posición como la inferior y superior a ella.
     def modificar_posicion3(self,fila,columna,posicion):
         a = self.posicion_tablero(fila, columna)+ posicion;
         if (a<self.fila*self.columna and a>= 0):
             self.comprobar_posicion(fila, columna,a);
-            if (self.metodo_prueba(fila, columna, 1)< self.columnas-4 and self.metodo_prueba(fila, columna, 1) >= 0 ):
+            if (self.reducir_casilla(fila, columna, 1)< self.columnas-4 and self.reducir_casilla(fila, columna, 1) >= 0 ):
                 self.comprobar_posicion(fila, columna,a+1);
-            if (self.metodo_prueba(fila, columna, -1)< self.columnas-4 and self.metodo_prueba(fila, columna, -1) >= 0 ):
+            if (self.reducir_casilla(fila, columna, -1)< self.columnas-4 and self.reducir_casilla(fila, columna, -1) >= 0 ):
                 self.comprobar_posicion(fila, columna,a-1);
             
         
         print self.posicion_tablero(fila, columna)
     
     
-    #Metodo que reduce la casilla del array a un numero menor que el de sus filas para poder comprobarlo depues
-    
-    def metodo_prueba(self,fila,columna,variable):
+    #Metodo que reduce la casilla del array a un numero menor que el de sus filas para poder comprobarlo depues 
+    def reducir_casilla(self,fila,columna,variable):
         a = self.posicion_tablero(fila, columna)
         while (a >= self.columna):
             a = a - self.columna
         print a+variable
         return a+variable
-    #M�todo que genera la cruz de 'x' en el tablero en funci�n de la posici�n pasada como par�metro
+    
+    #Método que comprueba el estado de la imagen dentro del tablero para modificarla.
     def comprobar_posicion(self,fila,columna,bandera):
         imagen_actual = self.tablero[bandera].get_child(); 
         estado_imagen = self.tablero[bandera].get_child().get_name();
@@ -311,15 +317,7 @@ class Practica:
             imagen_actual.set_from_file(self.ruta_desactivado);
             imagen_actual.set_name("desactivado");  
              
-    #M�todo que inicia la matriz de juego(tablero) con puntos
-    def iniciar_tablero(self,tablero):
-        for i in range(self.filas):
-            tablero.append([]);   
-            for j in range (self.columnas):
-                tablero[i].append(".");
-    '''Método que deshará la jugada actual del jugador.
-    Deberá volver a un estado anterior siempre que el actual no sea el primer turno de juego.
-    '''
+    #Método que deshace la jugada actual, siempre que no sea la primera del nivel.
     def deshacer_jugada(self,widget,data = None):
         if  len(self.historial)>0 and self.ronda>0:       
             peticion=self.historial[self.ronda-1];
@@ -332,12 +330,12 @@ class Practica:
         else:
             self.crear_dialogo("No se puede deshacer la jugada actual",gtk.MESSAGE_ERROR);
             
-    #Metodos relacionados con los ficheros
-    #M�todo que lee el fichero y lo lee y modifica en funci�n de la puntuaci�n que haya obtenido el usuario
+    
+    #Método que lee las puntuaciones del fichero
     def leer_puntuaciones(self,ruta,label,nivel):
         try:
             fichero = open(ruta,"r");
-            ##En este caso, cargamos las puntuaciones en el dialogo que muestra todas las puntuaciones
+            #En este caso, cargamos las puntuaciones en el dialogo que muestra todas las puntuaciones
             if nivel == 0:
                 label.set_text("");
                 for linea in fichero:
@@ -347,6 +345,7 @@ class Practica:
                     label.set_text(label.get_text()+"\n"+
                                    "Nivel:"+nivel_guardado+
                                    " Puntuación:"+toques_nivel+"\n");
+            #En este otro caso, mostramos la puntuación del nivel actual al jugador en la etiqueta inferior izquierda de la interfaz
             else:
                 for linea in fichero:
                     punt = linea.split(":")
@@ -362,7 +361,7 @@ class Practica:
             if label.get_name() == "lbl_max_punt":
                 label.set_text("Nivel actual:"+
                                     "\nPuntuación:");
-                   
+    #Método que modificará el fichero, si conviene.              
     def comprobar_puntuaciones(self,nivel,puntuacion,ruta):
         fichero = open(ruta,"r")
         lineas = []
@@ -387,12 +386,12 @@ class Practica:
             fichero.write("\n")
         fichero.close()  
 
-    #M�todo que inicia un array con el formato usado para almacenar las puntuaciones
+    #Método que inicia un array con el formato usado para almacenar las puntuaciones
     def formato_puntuaciones(self,puntuaciones):
         for i in range (1,len(self.letras)+1):
             puntuaciones.append(str(i)+":"+str(50))
 
-    #M�todo que inicia el fichero de puntuaciones si dicho fichero no existe
+    #Método que inicia el fichero de puntuaciones si dicho fichero no existe
     def iniciar_fichero(self,puntuaciones,ruta):
         #Volcamos el array con las nuevas puntuaciones
         fichero = open(ruta,"w")
